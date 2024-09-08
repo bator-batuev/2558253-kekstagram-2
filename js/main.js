@@ -24,8 +24,8 @@ const NAMES = [
   'Таня',
   'Батор'
 ];
-  // мин и макс значения id,лайков,аватаров и комментариев;количество объектов в итоговом массиве
 
+// мин и макс значения id,лайков,аватаров и комментариев;количество объектов в итоговом массиве
 const MIN_LIKES = 15;
 const MAX_LIKES = 200;
 const MIN_AVATAR = 1;
@@ -34,33 +34,21 @@ const MIN_COMMENTS = 0;
 const MAX_COMMENTS = 30;
 const SIMILAR_OBJECTS_COUNT = 25;
 
-// нахождение случайного числа из диапазона и проверка на уникальность
-const generatedNumbers = [];
+// нахождение случайного числа из диапазона
 const getRandomPositiveInteger = (a, b) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
-  const result = Math.floor(Math.random() * (upper - lower + 1) + lower);
-  if (generatedNumbers.includes(result)) {
-    return getRandomPositiveInteger(a,b);
-  }
-  generatedNumbers.push(result);
-  return result;
+  return Math.floor(Math.random() * (upper - lower + 1) + lower);
 };
 
-//получение случайного числа без проверки на уникальность
-const getAvatarIndex = (a, b) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-  const result = Math.random() * (upper - lower + 1) + lower;
-  return Math.floor(result);
-};
-  // получение случайного элемента массива
-const getRandomArrayElement = (elements) => elements[getAvatarIndex(0, elements.length - 1)];
+// получение случайного элемента массива
+const getRandomArrayElement = (elements) => elements[getRandomPositiveInteger(0, elements.length - 1)];
 
 // функция получения комментария
+let currentCommentId = 1;
 const createComment = () => ({
-  id: getRandomPositiveInteger(1, 1000),
-  avatar: 'img/avatar-' + getAvatarIndex(MIN_AVATAR, MAX_AVATAR) + '.svg',
+  id: currentCommentId++,
+  avatar: `img/avatar-${ getRandomPositiveInteger(MIN_AVATAR, MAX_AVATAR) }.svg`,
   message: getRandomArrayElement(MESSAGES),
   name: getRandomArrayElement(NAMES)
 });
@@ -72,10 +60,10 @@ const createObject = () => {
   currentId++;
   return {
     id: id,
-    url: 'photos/' + id + '.jpg',
+    url: `photos/${ id }.jpg`,
     description: getRandomArrayElement(DESCRIPTION),
-    likes: getAvatarIndex(MIN_LIKES, MAX_LIKES),
-    comments: Array.from({length: getAvatarIndex(MIN_COMMENTS, MAX_COMMENTS)}, createComment),
+    likes: getRandomPositiveInteger(MIN_LIKES, MAX_LIKES),
+    comments: Array.from({length: getRandomPositiveInteger(MIN_COMMENTS, MAX_COMMENTS)}, createComment),
   };
 };
 
