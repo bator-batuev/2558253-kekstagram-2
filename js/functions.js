@@ -19,11 +19,12 @@ const getNumbers = (string = '') => {
 console.log(getNumbers('1 кефир, 0.5 батона'));
 
 // функция, которая проверяет, укладывается ли встреча в рабочий день
+const timeToMinutes = (time) => {
+  const [hours, minutes] = time.split(':').map(Number);
+  return hours * 60 + minutes;
+};
+
 const isMeetingInWorkday = (startWork, endWork, startMeeting, duration) => {
-  const timeToMinutes = (time) => {
-    const [hours, minutes] = time.split(':').map(Number);
-    return hours * 60 + minutes;
-  };
   const startWorkMinutes = timeToMinutes(startWork);
   const endWorkMinutes = timeToMinutes(endWork);
   const startMeetingMinutes = timeToMinutes(startMeeting);
