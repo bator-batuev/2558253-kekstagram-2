@@ -17,3 +17,17 @@ const getNumbers = (string = '') => {
   return parseInt(finalNumber, 10);
 };
 console.log(getNumbers('1 кефир, 0.5 батона'));
+
+// функция, которая проверяет, укладывается ли встреча в рабочий день
+const isMeetingInWorkday = (startWork, endWork, startMeeting, duration) => {
+  const timeToMinutes = (time) => {
+    const [hours, minutes] = time.split(':').map(Number);
+    return hours * 60 + minutes;
+  };
+  const startWorkMinutes = timeToMinutes(startWork);
+  const endWorkMinutes = timeToMinutes(endWork);
+  const startMeetingMinutes = timeToMinutes(startMeeting);
+  const endMeetingMinutes = startMeetingMinutes + duration;
+  return startMeetingMinutes >= startWorkMinutes && endMeetingMinutes <= endWorkMinutes;
+};
+console.log(isMeetingInWorkday('8:00','17:30','08:00', 900));
