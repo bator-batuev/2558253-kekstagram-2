@@ -10,14 +10,18 @@ const pictureBlock = document.querySelector('.pictures');
 similarObjects.forEach((photo) => {
   // клонируем и записываем в переменную шаблон миниатюры со всеми потомками
   const thumbnail = thumbnailTemplate.cloneNode(true);
-  // зпролняем шаблон данными из объекта
-  thumbnail.querySelector('.picture__img').src = photo.url;
-  thumbnail.querySelector('.picture__img').alt = photo.description;
-  thumbnail.querySelector('.picture__likes').textContent = photo.likes;
-  thumbnail.querySelector('.picture__comments').textContent = photo.comments.length;
+  // находим необходимые элементы один раз
+  const imgElement = thumbnail.querySelector('.picture__img');
+  const likesElement = thumbnail.querySelector('.picture__likes');
+  const commentsElement = thumbnail.querySelector('.picture__comments');
+  // заполняем шаблон данными из объекта
+  imgElement.src = photo.url;
+  imgElement.alt = photo.description;
+  likesElement.textContent = photo.likes;
+  commentsElement.textContent = photo.comments.length;
   // вставляем шаблон в контейнер
   container.append(thumbnail);
 });
-// вставляем контейнер со всеми миниатюрами в отведенный для них блок
+// вставляем контейнер со всеми миниатюрами в отведенный
 pictureBlock.append(container);
 
