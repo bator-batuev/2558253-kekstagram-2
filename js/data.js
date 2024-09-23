@@ -18,7 +18,4 @@ const createObject = () => {
 };
 
 // мультиплицируем 25 раз
-const similarObjects = Array.from({length: SIMILAR_OBJECTS_COUNT}, createObject);
-
-// выводим итоговый массив
-console.log(similarObjects);
+export const similarObjects = Array.from({length: SIMILAR_OBJECTS_COUNT}, createObject);
