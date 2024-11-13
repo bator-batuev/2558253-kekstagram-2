@@ -5,9 +5,9 @@ const thumbnailTemplate = document.querySelector('#picture').content.querySelect
 // создаем контейнер для оптимизации обработки миниатюр
 const container = document.createDocumentFragment();
 // находим и записываем в переменную блок для вставки миниатюр
-const pictureBlock = document.querySelector('.pictures');
+export const pictureBlock = document.querySelector('.pictures');
 // перебираем объект с данными
-similarObjects.forEach((photo) => {
+similarObjects.forEach(({id, url, description, likes, comments}) => {
   // клонируем и записываем в переменную шаблон миниатюры со всеми потомками
   const thumbnail = thumbnailTemplate.cloneNode(true);
   // находим необходимые элементы один раз
@@ -15,10 +15,11 @@ similarObjects.forEach((photo) => {
   const likesElement = thumbnail.querySelector('.picture__likes');
   const commentsElement = thumbnail.querySelector('.picture__comments');
   // заполняем шаблон данными из объекта
-  imgElement.src = photo.url;
-  imgElement.alt = photo.description;
-  likesElement.textContent = photo.likes;
-  commentsElement.textContent = photo.comments.length;
+  thumbnail.dataset.pictureId = id;
+  imgElement.src = url;
+  imgElement.alt = description;
+  likesElement.textContent = likes;
+  commentsElement.textContent = comments.length;
   // вставляем шаблон в контейнер
   container.append(thumbnail);
 });
