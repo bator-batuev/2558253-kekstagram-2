@@ -50,7 +50,7 @@ function onEscKeydown (evt) {
 }
 
 // функция открытия полноэкранного изображения
-function openBigPicture (pictureId) {
+export function openBigPicture (pictureId) {
   // в массиве сгенерированных объектов находим фотографию с переданным в аргументе id (приводим к числу, если строка)
   const currentPhoto = similarObjects.find((photo) => photo.id === Number(pictureId));
   // создаем фрагмент для записи комментариев
