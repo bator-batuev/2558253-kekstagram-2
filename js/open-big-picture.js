@@ -1,5 +1,5 @@
 import { similarObjects } from './data.js';
-import { pictureBlock } from './thumbnails.js';
+
 
 // находим элемент для показа полноэкранного изображения
 const bigPictureNode = document.querySelector('.big-picture');
@@ -21,7 +21,7 @@ const commentsLoaderNode = bigPictureNode.querySelector('.social__comments-loade
 const bigPictureCancelNode = bigPictureNode.querySelector('.big-picture__cancel');
 
 // функция закрытия окна просмотра
-const closeBigPicture = () => {
+function closeBigPicture () {
   // добавляем элементу для показа полноэкранного изображения класс hidden
   bigPictureNode.classList.add('hidden');
   // удаляем класс modal-open, чтобы контейнер с фотографиями снова скроллился
@@ -30,26 +30,27 @@ const closeBigPicture = () => {
   bigPictureCancelNode.removeEventListener('click', onBigPictureCancelClick);
   // удаляем с документа обработчик закрытия окна просмотра по нажатию клавишы Esc
   document.removeEventListener('keydown', onEscKeydown);
-};
+}
 
 // функция закрытия окна просмотра по клику
-const onBigPictureCancelClick = () => {
+function onBigPictureCancelClick () {
   // вызываем функцию закрытия окна просмотра
   closeBigPicture();
-};
+}
 // функция закрытия окна просмотра по нажатию клавишы Esc
-const onEscKeydown = (evt) => {
-  // проверяем, что нажата клавиша Esc
-  if (evt.key === 'Escape') {
-    // отменяем действие по умолчанию
-    evt.preventDefault();
-    // вызываем функцию закрытия окна просмотра
-    closeBigPicture();
+function onEscKeydown (evt) {
+  // проверяем, что нажата не клавиша Esc, выходим из функции
+  if (evt.key !== 'Escape') {
+    return;
   }
-};
+  // отменяем действие по умолчанию
+  evt.preventDefault();
+  // вызываем функцию закрытия окна просмотра
+  closeBigPicture();
+}
 
 // функция открытия полноэкранного изображения
-const openBigPicture = (pictureId) => {
+function openBigPicture (pictureId) {
   // в массиве сгенерированных объектов находим фотографию с переданным в аргументе id (приводим к числу, если строка)
   const currentPhoto = similarObjects.find((photo) => photo.id === Number(pictureId));
   // создаем фрагмент для записи комментариев
@@ -95,13 +96,4 @@ const openBigPicture = (pictureId) => {
   document.body.classList.add('modal-open');
   // вешаем обработчик событий на документ на закрытие окна показа изображения по нажатию клавиши Esc
   document.addEventListener('keydown', onEscKeydown);
-};
-// вешаем обработчик событий по клику на весь блок с миниатюрами
-pictureBlock.addEventListener('click', (evt) => {
-  const currentBigPicture = evt.target.closest('.picture');
-  // проверяем, что кликнули по миниатюре
-  if (currentBigPicture) {
-    // аргументом передаем в функцию открытия полноэкранного изображения id изображения, по которому кликнули
-    openBigPicture(currentBigPicture.dataset.pictureId);
-  }
-});
+}
