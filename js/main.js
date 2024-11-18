@@ -5,3 +5,4 @@ import './server-upload.js';
 import './open-big-picture.js';
 import './img-filter.js';
 import './thumbnails.js';
+import './render-comments.js';
