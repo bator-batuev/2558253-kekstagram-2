@@ -6,3 +6,8 @@ import './open-big-picture.js';
 import './img-filter.js';
 import './thumbnails.js';
 import './render-comments.js';
+import './form.js';
+import './check-hashtag-validity.js';
+import './util.js';
+import { initUploadModal } from './img-upload.js';
+initUploadModal();
