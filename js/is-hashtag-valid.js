@@ -3,11 +3,7 @@ import { numDecline } from './util.js';
 const MAX_SYMBOLS = 20;
 const MAX_HASHTAGS = 5;
 
-let errorMessage = '';
-const error = () => errorMessage;
-
 const isHashtagValid = (value) => {
-  errorMessage = '';
 
   const inputText = value.toLowerCase().trim();
 
@@ -48,13 +44,12 @@ const isHashtagValid = (value) => {
     },
   ];
 
-  return rules.every((rule) => {
-    const isInvalid = rule.check;
-    if (isInvalid) {
-      errorMessage = rule.error;
+  for (const rule of rules) {
+    if (rule.check) {
+      return rule.error;
     }
-    return !isInvalid;
-  });
+  }
+  return true;
 };
 
-export {error, isHashtagValid};
+export {isHashtagValid};

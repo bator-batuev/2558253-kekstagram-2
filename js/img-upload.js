@@ -1,5 +1,5 @@
 import { isEscapeKey } from './util.js';
-import { error, isHashtagValid } from './check-hashtag-validity.js';
+import { isHashtagValid } from './is-hashtag-valid.js';
 
 const uploadForm = document.querySelector('.img-upload__form');
 const pageBody = document.querySelector('body');
@@ -10,6 +10,9 @@ const photoEditorResetBtn = document.querySelector('#upload-cancel');
 
 const hashtagInput = document.querySelector('.text__hashtags');
 const commentInput = document.querySelector('.text__description');
+
+const MAX_COMMENT_LENGTH = 140;
+const MAX_COMMENT_LENGTH_ERROR_MESSAGE = 'Превышено допустимое количество символов';
 
 const onPhotoEditorResetBtnClick = () => closePhotoEditor();
 
@@ -39,6 +42,7 @@ export const initUploadModal = () => {
     pageBody.classList.add('modal-open');
     photoEditorResetBtn.addEventListener('click', onPhotoEditorResetBtnClick);
     document.addEventListener('keydown', onDocumentKeydown);
+    uploadForm.addEventListener('submit', onFormSubmit);
   });
 };
 
@@ -48,24 +52,22 @@ const pristine = new Pristine (uploadForm, {
   errorTextParent: 'img-upload__field-wrapper',
 });
 
+pristine.addValidator(hashtagInput, (value) => isHashtagValid(value) === true, isHashtagValid);
+
 function validateComment (value) {
-  return value.length <= 140;
+  return value.length <= MAX_COMMENT_LENGTH;
 }
 
-pristine.addValidator(commentInput, validateComment, 'Превышено допустимое количество символов');
+pristine.addValidator(commentInput, validateComment, MAX_COMMENT_LENGTH_ERROR_MESSAGE);
 commentInput.addEventListener('input', (evt) => {
   evt.preventDefault();
   pristine.validate();
 });
 
-pristine.addValidator(hashtagInput, isHashtagValid, error, 2, false);
-
-const onFormSubmit = (evt) => {
+function onFormSubmit (evt) {
   evt.preventDefault();
   if (pristine.validate()) {
     hashtagInput.value = hashtagInput.value.trim().replaceAll(/\s+/g, ' ');
     uploadForm.submit();
   }
-};
-
-uploadForm.addEventListener('submit', onFormSubmit);
+}

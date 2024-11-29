@@ -7,7 +7,7 @@ import './img-filter.js';
 import './thumbnails.js';
 import './render-comments.js';
 import './form.js';
-import './check-hashtag-validity.js';
+import './is-hashtag-valid.js';
 import './util.js';
 import { initUploadModal } from './img-upload.js';
 initUploadModal();
