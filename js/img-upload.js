@@ -1,5 +1,7 @@
 import { isEscapeKey } from './util.js';
 import { isHashtagValid } from './is-hashtag-valid.js';
+import { MAX_COMMENT_LENGTH, MAX_COMMENT_LENGTH_ERROR_MESSAGE, SCALE_STEP } from './const.js';
+import { onEffectRadioBtnClick, resetFilter, imgPreview} from './effects-slider.js';
 
 const uploadForm = document.querySelector('.img-upload__form');
 const pageBody = document.querySelector('body');
@@ -11,8 +13,11 @@ const photoEditorResetBtn = document.querySelector('#upload-cancel');
 const hashtagInput = document.querySelector('.text__hashtags');
 const commentInput = document.querySelector('.text__description');
 
-const MAX_COMMENT_LENGTH = 140;
-const MAX_COMMENT_LENGTH_ERROR_MESSAGE = 'Превышено допустимое количество символов';
+const effectsList = uploadForm.querySelector('.effects__list');
+
+const smaller = uploadForm.querySelector('.scale__control--smaller');
+const bigger = uploadForm.querySelector('.scale__control--bigger');
+const scaleControlValue = uploadForm.querySelector('.scale__control--value');
 
 const onPhotoEditorResetBtnClick = () => closePhotoEditor();
 
@@ -71,3 +76,28 @@ function onFormSubmit (evt) {
     uploadForm.submit();
   }
 }
+
+let scale = 1;
+const onSmallerBtnClick = () => {
+  if (scale > SCALE_STEP) {
+    scale -= SCALE_STEP;
+    imgPreview.style.transform = `scale(${scale})`;
+    scaleControlValue.value = `${scale * 100}%`;
+  }
+};
+
+const onBiggerBtnClick = () => {
+  if (scale < 1) {
+    scale += SCALE_STEP;
+    imgPreview.style.transform = `scale(${scale})`;
+    scaleControlValue.value = `${scale * 100}%`;
+  }
+};
+
+effectsList.addEventListener('change', (evt) => {
+  resetFilter();
+  onEffectRadioBtnClick(evt);
+});
+
+smaller.addEventListener('click', onSmallerBtnClick);
+bigger.addEventListener('click', onBiggerBtnClick);
