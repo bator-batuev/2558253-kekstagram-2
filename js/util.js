@@ -1,4 +1,4 @@
-import { MAX_AVATAR, MIN_AVATAR, MESSAGES, NAMES } from './const.js';
+import { Avatar, MESSAGES, NAMES } from './const.js';
 
 // нахождение случайного числа из диапазона
 const getRandomPositiveInteger = (a, b) => {
@@ -14,7 +14,7 @@ const getRandomArrayElement = (elements) => elements[getRandomPositiveInteger(0,
 let currentCommentId = 1;
 const createComment = () => ({
   id: currentCommentId++,
-  avatar: `img/avatar-${ getRandomPositiveInteger(MIN_AVATAR, MAX_AVATAR) }.svg`,
+  avatar: `img/avatar-${ getRandomPositiveInteger(Avatar.MIN, Avatar.MAX) }.svg`,
   message: getRandomArrayElement(MESSAGES),
   name: getRandomArrayElement(NAMES)
 });

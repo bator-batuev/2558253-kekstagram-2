@@ -26,12 +26,20 @@ const NAMES = [
 ];
 
 // мин и макс значения id,лайков,аватаров и комментариев;количество объектов в итоговом массиве
-const MIN_LIKES = 15;
-const MAX_LIKES = 200;
-const MIN_AVATAR = 1;
-const MAX_AVATAR = 6;
-const MIN_COMMENTS = 0;
-const MAX_COMMENTS = 30;
+const Like = {
+  MIN: 15,
+  MAX: 200
+};
+
+const Avatar = {
+  MIN: 1,
+  MAX: 6
+};
+const Comments = {
+  MIN: 0,
+  MAX: 30
+};
+
 const SIMILAR_OBJECTS_COUNT = 25;
 
 const SCALE_STEP = 0.25;
@@ -39,17 +47,16 @@ const SCALE_STEP = 0.25;
 const MAX_COMMENT_LENGTH = 140;
 const MAX_COMMENT_LENGTH_ERROR_MESSAGE = 'Превышено допустимое количество символов';
 
-const getEffectSelector = (currentInputId) => {
-  const selectors = {
-    'effect-none': 'effects__preview--none',
-    'effect-chrome': 'effects__preview--chrome',
-    'effect-sepia': 'effects__preview--sepia',
-    'effect-marvin': 'effects__preview--marvin',
-    'effect-phobos': 'effects__preview--phobos',
-    'effect-heat': 'effects__preview--heat',
-  };
-  return selectors[currentInputId];
+const EffectSelector = {
+  'effect-none': 'effects__preview--none',
+  'effect-chrome': 'effects__preview--chrome',
+  'effect-sepia': 'effects__preview--sepia',
+  'effect-marvin': 'effects__preview--marvin',
+  'effect-phobos': 'effects__preview--phobos',
+  'effect-heat': 'effects__preview--heat',
 };
+
+const getEffectSelector = (currentInputId) => EffectSelector[currentInputId];
 
 const sliderOptionsObjectChromeSepia = {
   range: {
@@ -96,18 +103,20 @@ const Effects = {
   heat: sliderOptionsObjectHeat,
 };
 
-const getChromeStyleFilter = (value) => `grayscale(${value})`;
-const getSepiaStyleFilter = (value) => `sepia(${value})`;
-const getMarvinStyleFilter = (value) => `invert(${value}%)`;
-const getPhobosStyleFilter = (value) => `blur(${value}px)`;
-const getHeatStyleFilter = (value) => `brightness(${value})`;
-
-const styleFilterByEffects = {
-  chrome: getChromeStyleFilter,
-  sepia: getSepiaStyleFilter,
-  marvin: getMarvinStyleFilter,
-  phobos: getPhobosStyleFilter,
-  heat: getHeatStyleFilter
+const StyleFilter = {
+  chrome: (value) => `grayscale(${value})`,
+  sepia: (value) => `sepia(${value})`,
+  marvin: (value) => `invert(${value}%)`,
+  phobos: (value) => `blur(${value}px)`,
+  heat: (value) => `brightness(${value})`,
 };
 
-export {DESCRIPTION, MESSAGES, NAMES, MIN_LIKES, MAX_LIKES, MIN_AVATAR, MAX_AVATAR, MIN_COMMENTS, MAX_COMMENTS, SIMILAR_OBJECTS_COUNT, SCALE_STEP, MAX_COMMENT_LENGTH, MAX_COMMENT_LENGTH_ERROR_MESSAGE, getEffectSelector, styleFilterByEffects, Effects};
+const styleFilterByEffect = {
+  chrome: StyleFilter.chrome,
+  sepia: StyleFilter.sepia,
+  marvin: StyleFilter.marvin,
+  phobos: StyleFilter.phobos,
+  heat: StyleFilter.heat
+};
+
+export {DESCRIPTION, MESSAGES, NAMES, Like, Avatar, Comments, SIMILAR_OBJECTS_COUNT, SCALE_STEP, MAX_COMMENT_LENGTH, MAX_COMMENT_LENGTH_ERROR_MESSAGE, getEffectSelector, styleFilterByEffect, Effects};

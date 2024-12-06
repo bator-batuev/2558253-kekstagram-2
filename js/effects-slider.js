@@ -1,4 +1,4 @@
-import {getEffectSelector, styleFilterByEffects, Effects} from './const.js';
+import {getEffectSelector, styleFilterByEffect, Effects} from './const.js';
 const imgUploadForm = document.querySelector('.img-upload__wrapper'); // форма редактирования изображения
 const effectSlider = imgUploadForm.querySelector('.effect-level__slider'); // слайдер
 const effectSliderContainer = imgUploadForm.querySelector('.img-upload__effect-level'); // контейнер слайдера
@@ -7,7 +7,7 @@ const imgPreview = imgUploadForm.querySelector('.img-upload__preview'); // ок�
 const selectorImg = imgPreview.classList;
 const effectRadioBtns = imgUploadForm.querySelectorAll('.effects__radio'); // кнопки выбора эффекта
 
-const getUpdateSliderOptions = (effect, sliderElement) =>
+const updateSliderOptions = (effect, sliderElement) =>
   sliderElement.noUiSlider.updateOptions(Effects[effect]);
 
 const resetFilter = () => {
@@ -21,7 +21,7 @@ const onEffectRadioBtnClick = (evt) => {
   if (currentRadioBtn) {
     const effectBtnValue = currentRadioBtn.value;
     imgPreview.classList.replace(selectorImg, getEffectSelector(effectBtnValue));
-    getUpdateSliderOptions(effectBtnValue, effectSlider);
+    updateSliderOptions(effectBtnValue, effectSlider);
   }
 };
 
@@ -37,16 +37,13 @@ noUiSlider.create(effectSlider, {
 
 effectSlider.noUiSlider.on('update', () => {
   effectLevelValue.value = effectSlider.noUiSlider.get();
-  effectRadioBtns.forEach((item) => {
-    if (item.checked) {
-      if (item.value !== 'none') {
-        effectSliderContainer.classList.remove('hidden');
-        imgPreview.style.filter = styleFilterByEffects[item.value](effectLevelValue.value);
-      } else {
-        resetFilter();
-      }
-    }
-  });
+  const checkedButton = Array.from(effectRadioBtns).find((radio) => radio.checked);
+  if (checkedButton.value !== 'none') {
+    effectSliderContainer.classList.remove('hidden');
+    imgPreview.style.filter = styleFilterByEffect[checkedButton.value](effectLevelValue.value);
+    return;
+  }
+  resetFilter();
 });
 
 export {onEffectRadioBtnClick, resetFilter, imgPreview};
