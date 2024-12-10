@@ -14,11 +14,16 @@ import { initUploadModal } from './img-upload.js';
 import { getData } from './api.js';
 import { savePhotos } from './data.js';
 import { renderThumbnails } from './thumbnails.js';
+import { showErrorMessage } from './util.js';
 initUploadModal();
 
 const bootstrap = async () => {
-  const photos = await getData();
-  savePhotos(photos);
-  renderThumbnails(photos);
+  try {
+    const photos = await getData();
+    savePhotos(photos);
+    renderThumbnails(photos);
+  } catch (error) {
+    showErrorMessage(error.message);
+  }
 };
 bootstrap();

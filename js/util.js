@@ -1,3 +1,5 @@
+import { REMOVE_MESSAGE_TIMEOUT } from './const.js';
+
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
 const numDecline = (num, nominative, genetiveSingular, genetivePlural) => {
@@ -14,4 +16,20 @@ const numDecline = (num, nominative, genetiveSingular, genetivePlural) => {
     : genetiveSingular;
 };
 
-export { isEscapeKey, numDecline };
+const errorLoadDataTemplate = document.querySelector('#data-error').content;
+const body = document.body;
+
+const showErrorMessage = (message) => {
+  const errorArea = errorLoadDataTemplate.cloneNode(true);
+  if (message) {
+    errorArea.querySelector('.data-error__title').textContent = message;
+  }
+  body.append(errorArea);
+  const errorLoadDataArea = body.querySelector('.data-error');
+
+  setTimeout(() => {
+    errorLoadDataArea.remove();
+  }, REMOVE_MESSAGE_TIMEOUT);
+};
+
+export { isEscapeKey, numDecline, showErrorMessage };
