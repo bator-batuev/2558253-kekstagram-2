@@ -9,5 +9,16 @@ import './render-comments.js';
 import './form.js';
 import './is-hashtag-valid.js';
 import './util.js';
+import './api.js';
 import { initUploadModal } from './img-upload.js';
+import { getData } from './api.js';
+import { savePhotos } from './data.js';
+import { renderThumbnails } from './thumbnails.js';
 initUploadModal();
+
+const bootstrap = async () => {
+  const photos = await getData();
+  savePhotos(photos);
+  renderThumbnails(photos);
+};
+bootstrap();

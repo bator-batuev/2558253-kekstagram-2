@@ -1,4 +1,4 @@
-import { similarObjects } from './data.js';
+import { photos } from './data.js';
 import { clearComments, renderComments, bigPictureNode } from './render-comments.js';
 
 // находим элемент для вставки изображения
@@ -44,7 +44,7 @@ function onEscKeydown (evt) {
 // функция открытия полноэкранного изображения
 export function openBigPicture (pictureId) {
   // в массиве сгенерированных объектов находим фотографию с переданным в аргументе id (приводим к числу, если строка)
-  const currentPhoto = similarObjects.find((photo) => photo.id === Number(pictureId));
+  const currentPhoto = photos.find((photo) => photo.id === Number(pictureId));
   // в атрибут src элемента для вставки изображения записываем путь к нему
   bigPictureImgNode.src = currentPhoto.url;
   // в атрибут textContent элемента для записи кол-ва лайков записываем кол-во лайков
