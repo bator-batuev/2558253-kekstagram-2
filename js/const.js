@@ -111,4 +111,9 @@ const ErrorText = {
 
 const REMOVE_MESSAGE_TIMEOUT = 5000;
 
-export { Like, Avatar, Comments, SIMILAR_OBJECTS_COUNT, SCALE_STEP, MAX_COMMENT_LENGTH, MAX_COMMENT_LENGTH_ERROR_MESSAGE, getEffectSelector, styleFilterByEffect, Effects, BASE_URL, Route, Method, ErrorText, REMOVE_MESSAGE_TIMEOUT};
+const SubmitBtnText = {
+  IDLE: 'Сохранить',
+  SENDING: 'Сохраняю...',
+};
+
+export { Like, Avatar, Comments, SIMILAR_OBJECTS_COUNT, SCALE_STEP, MAX_COMMENT_LENGTH, MAX_COMMENT_LENGTH_ERROR_MESSAGE, getEffectSelector, styleFilterByEffect, Effects, BASE_URL, Route, Method, ErrorText, REMOVE_MESSAGE_TIMEOUT, SubmitBtnText };

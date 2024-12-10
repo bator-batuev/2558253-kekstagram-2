@@ -1,7 +1,9 @@
 import { isEscapeKey } from './util.js';
 import { isHashtagValid } from './is-hashtag-valid.js';
-import { MAX_COMMENT_LENGTH, MAX_COMMENT_LENGTH_ERROR_MESSAGE, SCALE_STEP } from './const.js';
+import { MAX_COMMENT_LENGTH, MAX_COMMENT_LENGTH_ERROR_MESSAGE, SCALE_STEP, SubmitBtnText } from './const.js';
 import { onEffectRadioBtnClick, resetFilter, imgPreview} from './effects-slider.js';
+import { sendData } from './api.js';
+import { appendNotification } from './notification.js';
 
 const uploadForm = document.querySelector('.img-upload__form');
 const pageBody = document.querySelector('body');
@@ -18,6 +20,20 @@ const effectsList = uploadForm.querySelector('.effects__list');
 const smaller = uploadForm.querySelector('.scale__control--smaller');
 const bigger = uploadForm.querySelector('.scale__control--bigger');
 const scaleControlValue = uploadForm.querySelector('.scale__control--value');
+
+const formSubmitBtn = uploadForm.querySelector('.img-upload__submit');
+const templateSuccess = document.querySelector('#success').content;
+const templateError = document.querySelector('#error').content;
+
+const disableBtn = (text) => {
+  formSubmitBtn.disabled = true;
+  formSubmitBtn.textContent = text;
+};
+
+const enableBtn = (text) => {
+  formSubmitBtn.disabled = false;
+  formSubmitBtn.textContent = text;
+};
 
 const onPhotoEditorResetBtnClick = () => closePhotoEditor();
 
@@ -69,12 +85,25 @@ commentInput.addEventListener('input', (evt) => {
   pristine.validate();
 });
 
+const sendFormData = async (formElement) => {
+  const isValid = pristine.validate();
+  if (isValid) {
+    disableBtn(SubmitBtnText.SENDING);
+    hashtagInput.value = hashtagInput.value.trim().replaceAll(/\s+/g, ' ');
+    try {
+      await sendData(new FormData(formElement));
+      appendNotification(templateSuccess, () => closePhotoEditor());
+    } catch (error) {
+      appendNotification(templateError);
+    } finally {
+      enableBtn(SubmitBtnText.IDLE);
+    }
+  }
+};
+
 function onFormSubmit (evt) {
   evt.preventDefault();
-  if (pristine.validate()) {
-    hashtagInput.value = hashtagInput.value.trim().replaceAll(/\s+/g, ' ');
-    uploadForm.submit();
-  }
+  sendFormData(evt.target);
 }
 
 let scale = 1;
