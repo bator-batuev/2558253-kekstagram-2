@@ -1,30 +1,3 @@
-const DESCRIPTION = [
-  'Красивый закат на берегу моря',
-  'Музей современного искусства',
-  'Театр оперы и балета',
-  'Центральная улица города',
-  'Гроза в деревне'
-];
-
-const MESSAGES = [
-  'Всё отлично!',
-  'В целом всё неплохо. Но не всё.',
-  'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
-  'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
-  'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
-  'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
-];
-
-const NAMES = [
-  'Антон',
-  'Александр',
-  'Артур',
-  'Зорик',
-  'Влад',
-  'Таня',
-  'Батор'
-];
-
 // мин и макс значения id,лайков,аватаров и комментариев;количество объектов в итоговом массиве
 const Like = {
   MIN: 15,
@@ -119,4 +92,9 @@ const styleFilterByEffect = {
   heat: StyleFilter.heat
 };
 
-export {DESCRIPTION, MESSAGES, NAMES, Like, Avatar, Comments, SIMILAR_OBJECTS_COUNT, SCALE_STEP, MAX_COMMENT_LENGTH, MAX_COMMENT_LENGTH_ERROR_MESSAGE, getEffectSelector, styleFilterByEffect, Effects};
+const SubmitBtnText = {
+  IDLE: 'Сохранить',
+  SENDING: 'Сохраняю...',
+};
+
+export { Like, Avatar, Comments, SIMILAR_OBJECTS_COUNT, SCALE_STEP, MAX_COMMENT_LENGTH, MAX_COMMENT_LENGTH_ERROR_MESSAGE, getEffectSelector, styleFilterByEffect, Effects, SubmitBtnText };

@@ -1,4 +1,3 @@
-import { similarObjects } from './data.js';
 import { clearComments, renderComments, bigPictureNode } from './render-comments.js';
 
 // находим элемент для вставки изображения
@@ -41,24 +40,17 @@ function onEscKeydown (evt) {
   closeBigPicture();
 }
 
-// функция открытия полноэкранного изображения
-export function openBigPicture (pictureId) {
-  // в массиве сгенерированных объектов находим фотографию с переданным в аргументе id (приводим к числу, если строка)
-  const currentPhoto = similarObjects.find((photo) => photo.id === Number(pictureId));
-  // в атрибут src элемента для вставки изображения записываем путь к нему
-  bigPictureImgNode.src = currentPhoto.url;
-  // в атрибут textContent элемента для записи кол-ва лайков записываем кол-во лайков
-  likesCountNode.textContent = currentPhoto.likes;
-  // в атрибут textContent блока для вставки описания записываем описание
-  commentsCaptionNode.textContent = currentPhoto.description;
-  //функция генерации комментариев
-  renderComments(currentPhoto.comments);
-  // для элемента показа полноэкранного изображения убираем класс hiddden
+// Убираем массив photos и функцию savePhotos
+export function openBigPicture(photo) { // Теперь принимаем объект фото напрямую
+  // Используем photo напрямую без поиска
+  bigPictureImgNode.src = photo.url;
+  likesCountNode.textContent = photo.likes;
+  commentsCaptionNode.textContent = photo.description;
+  renderComments(photo.comments);
+
   bigPictureNode.classList.remove('hidden');
-  // добавляем тегу body класс modal-open, чтобы контейнер с фотографиями не прокручивался
   document.body.classList.add('modal-open');
-  // вешаем обработчик событий на кнопку закрытия окна показа изображения по клику
+
   bigPictureCancelNode.addEventListener('click', onBigPictureCancelClick);
-  // вешаем обработчик событий на документ на закрытие окна показа изображения по нажатию клавиши Esc
   document.addEventListener('keydown', onEscKeydown);
 }
