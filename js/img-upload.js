@@ -1,9 +1,8 @@
 import { isEscapeKey } from './util.js';
-import { isHashtagValid } from './is-hashtag-valid.js';
-import { MAX_COMMENT_LENGTH, MAX_COMMENT_LENGTH_ERROR_MESSAGE, SCALE_STEP, SubmitBtnText } from './const.js';
+import { SCALE_STEP } from './const.js';
 import { onEffectRadioBtnClick, resetFilter, imgPreview} from './effects-slider.js';
 import { sendData } from './api.js';
-import { appendNotification } from './notification.js';
+import { createValidator } from './validation.js';
 
 const uploadForm = document.querySelector('.img-upload__form');
 const pageBody = document.querySelector('body');
@@ -22,17 +21,41 @@ const bigger = uploadForm.querySelector('.scale__control--bigger');
 const scaleControlValue = uploadForm.querySelector('.scale__control--value');
 
 const formSubmitBtn = uploadForm.querySelector('.img-upload__submit');
-const templateSuccess = document.querySelector('#success').content;
+const templateSucces = document.querySelector('#success').content;
 const templateError = document.querySelector('#error').content;
 
-const disableBtn = (text) => {
+const submitBtnText = {
+  IDLE: 'Сохранить',
+  SENDING: 'Сохраняю...',
+};
+
+const disabledBtn = (text) => {
   formSubmitBtn.disabled = true;
   formSubmitBtn.textContent = text;
 };
 
-const enableBtn = (text) => {
+const enabledBtn = (text) => {
   formSubmitBtn.disabled = false;
   formSubmitBtn.textContent = text;
+};
+
+const closeNotification = (evt) => {
+  evt.stopPropagation();
+  const existElement = document.querySelector('.success') || document.querySelector('.error');
+  const closeBtn = existElement.querySelector('button');
+  if (evt.target === existElement || evt.target === closeBtn || isEscapeKey(evt)) {
+    existElement.remove();
+    pageBody.removeEventListener('click', closeNotification);
+    pageBody.removeEventListener('keydown', closeNotification);
+  }
+};
+
+const appendNotification = (template, trigger = null) => {
+  trigger?.();
+  const notificationNode = template.cloneNode(true);
+  pageBody.append(notificationNode);
+  pageBody.addEventListener('click', closeNotification);
+  pageBody.addEventListener('keydown', closeNotification);
 };
 
 const onPhotoEditorResetBtnClick = () => closePhotoEditor();
@@ -57,7 +80,10 @@ function closePhotoEditor () {
   uploadFileControl.value = '';
 }
 
-export const initUploadModal = () => {
+const initUploadModal = () => {
+  const validator = createValidator(uploadForm);
+  validator.addValidators(hashtagInput, commentInput);
+
   uploadFileControl.addEventListener('change', () => {
     photoEditorForm.classList.remove('hidden');
     pageBody.classList.add('modal-open');
@@ -65,46 +91,28 @@ export const initUploadModal = () => {
     document.addEventListener('keydown', onDocumentKeydown);
     uploadForm.addEventListener('submit', onFormSubmit);
   });
-};
 
-const pristine = new Pristine (uploadForm, {
-  classTo: 'img-upload__form',
-  errorTextClass: 'img-upload__field-wrapper--error',
-  errorTextParent: 'img-upload__field-wrapper',
-});
-
-pristine.addValidator(hashtagInput, (value) => isHashtagValid(value) === true, isHashtagValid);
-
-function validateComment (value) {
-  return value.length <= MAX_COMMENT_LENGTH;
-}
-
-pristine.addValidator(commentInput, validateComment, MAX_COMMENT_LENGTH_ERROR_MESSAGE);
-commentInput.addEventListener('input', (evt) => {
-  evt.preventDefault();
-  pristine.validate();
-});
-
-const sendFormData = async (formElement) => {
-  const isValid = pristine.validate();
-  if (isValid) {
-    disableBtn(SubmitBtnText.SENDING);
-    hashtagInput.value = hashtagInput.value.trim().replaceAll(/\s+/g, ' ');
-    try {
-      await sendData(new FormData(formElement));
-      appendNotification(templateSuccess, () => closePhotoEditor());
-    } catch (error) {
-      appendNotification(templateError);
-    } finally {
-      enableBtn(SubmitBtnText.IDLE);
+  const sendFormData = async (formElement) => {
+    const isValid = validator.validate();
+    if (isValid) {
+      hashtagInput.value = hashtagInput.value.trim().replaceAll(/\s+/g, ' ');
+      disabledBtn(submitBtnText.SENDING);
+      try {
+        await sendData(new FormData(formElement));
+        appendNotification(templateSucces, () => closePhotoEditor(formElement));
+      } catch (error) {
+        appendNotification(templateError);
+      } finally {
+        enabledBtn(submitBtnText.IDLE);
+      }
     }
+  };
+
+  function onFormSubmit (evt) {
+    evt.preventDefault();
+    sendFormData(evt.target);
   }
 };
-
-function onFormSubmit (evt) {
-  evt.preventDefault();
-  sendFormData(evt.target);
-}
 
 let scale = 1;
 const onSmallerBtnClick = () => {
@@ -130,3 +138,5 @@ effectsList.addEventListener('change', (evt) => {
 
 smaller.addEventListener('click', onSmallerBtnClick);
 bigger.addEventListener('click', onBiggerBtnClick);
+
+export { uploadForm, initUploadModal };

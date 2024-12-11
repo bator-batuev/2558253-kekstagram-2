@@ -92,28 +92,9 @@ const styleFilterByEffect = {
   heat: StyleFilter.heat
 };
 
-const BASE_URL = 'https://31.javascript.htmlacademy.pro/kekstagram';
-
-const Route = {
-  GET_DATA: '/data',
-  SEND_DATA: '/',
-};
-
-const Method = {
-  GET: 'GET',
-  POST: 'POST',
-};
-
-const ErrorText = {
-  [Method.GET]: 'Не удалось загрузить данные. Попробуйте еще раз',
-  [Method.POST]: 'Не удалось отправить данные формы',
-};
-
-const REMOVE_MESSAGE_TIMEOUT = 5000;
-
 const SubmitBtnText = {
   IDLE: 'Сохранить',
   SENDING: 'Сохраняю...',
 };
 
-export { Like, Avatar, Comments, SIMILAR_OBJECTS_COUNT, SCALE_STEP, MAX_COMMENT_LENGTH, MAX_COMMENT_LENGTH_ERROR_MESSAGE, getEffectSelector, styleFilterByEffect, Effects, BASE_URL, Route, Method, ErrorText, REMOVE_MESSAGE_TIMEOUT, SubmitBtnText };
+export { Like, Avatar, Comments, SIMILAR_OBJECTS_COUNT, SCALE_STEP, MAX_COMMENT_LENGTH, MAX_COMMENT_LENGTH_ERROR_MESSAGE, getEffectSelector, styleFilterByEffect, Effects, SubmitBtnText };

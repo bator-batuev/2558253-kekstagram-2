@@ -1,10 +1,10 @@
+import { MAX_COMMENT_LENGTH, MAX_COMMENT_LENGTH_ERROR_MESSAGE } from './const.js';
 import { numDecline } from './util.js';
 
-const MAX_SYMBOLS = 20;
+const MAX_HASHTAG_SYMBOLS = 20;
 const MAX_HASHTAGS = 5;
 
-const isHashtagValid = (value) => {
-
+const validateHashtag = (value) => {
   const inputText = value.toLowerCase().trim();
 
   if (inputText.length === 0) {
@@ -31,8 +31,8 @@ const isHashtagValid = (value) => {
       error: 'Хэштеги не должны повторяться',
     },
     {
-      check: inputArray.some((item) => item.length > MAX_SYMBOLS),
-      error: `Максимальная длина одного хэштега ${MAX_SYMBOLS} символов, включая #`,
+      check: inputArray.some((item) => item.length > MAX_HASHTAG_SYMBOLS),
+      error: `Максимальная длина одного хэштега ${MAX_HASHTAG_SYMBOLS} символов, включая #`,
     },
     {
       check: inputArray.length > MAX_HASHTAGS,
@@ -49,7 +49,43 @@ const isHashtagValid = (value) => {
       return rule.error;
     }
   }
+
   return true;
 };
 
-export {isHashtagValid};
+const validateComment = (value) => value.length <= MAX_COMMENT_LENGTH;
+
+const createValidator = (form) => {
+  const pristine = new Pristine(form, {
+    classTo: 'img-upload__form',
+    errorTextClass: 'img-upload__field-wrapper--error',
+    errorTextParent: 'img-upload__field-wrapper',
+  });
+
+  const addValidators = (hashtagInput, commentInput) => {
+    pristine.addValidator(
+      hashtagInput,
+      (value) => validateHashtag(value) === true,
+      validateHashtag
+    );
+
+    pristine.addValidator(
+      commentInput,
+      validateComment,
+      MAX_COMMENT_LENGTH_ERROR_MESSAGE
+    );
+
+    commentInput.addEventListener('input', (evt) => {
+      evt.preventDefault();
+      pristine.validate();
+    });
+  };
+
+  return {
+    pristine,
+    addValidators,
+    validate: () => pristine.validate()
+  };
+};
+
+export { createValidator };
