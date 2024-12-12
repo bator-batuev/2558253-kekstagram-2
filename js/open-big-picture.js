@@ -40,7 +40,6 @@ function onEscKeydown (evt) {
   closeBigPicture();
 }
 
-// Убираем массив photos и функцию savePhotos
 export function openBigPicture(photo) { // Теперь принимаем объект фото напрямую
   // Используем photo напрямую без поиска
   bigPictureImgNode.src = photo.url;

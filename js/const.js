@@ -92,9 +92,4 @@ const styleFilterByEffect = {
   heat: StyleFilter.heat
 };
 
-const SubmitBtnText = {
-  IDLE: 'Сохранить',
-  SENDING: 'Сохраняю...',
-};
-
-export { Like, Avatar, Comments, SIMILAR_OBJECTS_COUNT, SCALE_STEP, MAX_COMMENT_LENGTH, MAX_COMMENT_LENGTH_ERROR_MESSAGE, getEffectSelector, styleFilterByEffect, Effects, SubmitBtnText };
+export { Like, Avatar, Comments, SIMILAR_OBJECTS_COUNT, SCALE_STEP, MAX_COMMENT_LENGTH, MAX_COMMENT_LENGTH_ERROR_MESSAGE, getEffectSelector, styleFilterByEffect, Effects };
