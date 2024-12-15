@@ -8,10 +8,10 @@ const ACTIVE_BUTTON_CLASS = 'img-filters__button--active';
 
 const debounceRender = debounce(renderThumbnails);
 
-const FILTER = {
-  default: 'filter-default',
-  random: 'filter-random',
-  discussed: 'filter-discussed',
+const Filter = {
+  DEFAULT: 'filter-default',
+  RANDOM: 'filter-random',
+  DISCUSSED: 'filter-discussed',
 };
 
 const SORTFUNC = {
@@ -24,38 +24,42 @@ const MAX_PICTURE_COUNT = 10;
 function onFilterChange (evt) {
   const targetButton = evt.target;
   const activeButton = document.querySelector(`.${ACTIVE_BUTTON_CLASS}`);
-  switch (true) {
-    case !targetButton.matches('button'):
-    case activeButton === targetButton:
-      return;
-    default:
-      activeButton.classList.toggle(ACTIVE_BUTTON_CLASS);
-      targetButton.classList.toggle(ACTIVE_BUTTON_CLASS);
-      currentFilter = targetButton.getAttribute('id');
-      applyFilter();
+  if (!activeButton) {
+    return;
+  }
+  if (!targetButton.matches('button')) {
+    return;
+  }
+  if (activeButton === targetButton) {
+    return;
+  } else {
+    activeButton.classList.toggle(ACTIVE_BUTTON_CLASS);
+    targetButton.classList.toggle(ACTIVE_BUTTON_CLASS);
+    currentFilter = targetButton.getAttribute('id');
+    applyFilter();
   }
 }
 
 function applyFilter() {
   let filteredPictures = [];
   switch (currentFilter) {
-    case FILTER.default:
+    case Filter.DEFAULT:
       filteredPictures = pictures;
       break;
-    case FILTER.random:
+    case Filter.RANDOM:
       filteredPictures = pictures.toSorted(SORTFUNC.random).slice(0, MAX_PICTURE_COUNT);
       break;
-    case FILTER.discussed:
+    case Filter.DISCUSSED:
       filteredPictures = pictures.toSorted(SORTFUNC.discussed);
       break;
   }
   debounceRender(filteredPictures);
 }
 
-function configFilter(photos) {
+function initFilter(photos) {
   filterElement.classList.remove('img-filters--inactive');
   filterElement.addEventListener('click', onFilterChange);
   pictures = photos;
 }
 
-export { configFilter };
+export { initFilter };
