@@ -32,12 +32,11 @@ function onFilterChange (evt) {
   }
   if (activeButton === targetButton) {
     return;
-  } else {
-    activeButton.classList.toggle(ACTIVE_BUTTON_CLASS);
-    targetButton.classList.toggle(ACTIVE_BUTTON_CLASS);
-    currentFilter = targetButton.getAttribute('id');
-    applyFilter();
   }
+  activeButton.classList.toggle(ACTIVE_BUTTON_CLASS);
+  targetButton.classList.toggle(ACTIVE_BUTTON_CLASS);
+  currentFilter = targetButton.getAttribute('id');
+  applyFilter();
 }
 
 function applyFilter() {
