@@ -3,6 +3,7 @@ import { SCALE_STEP } from './const.js';
 import { onEffectRadioBtnClick, resetFilter, imgPreview} from './effects-slider.js';
 import { sendData } from './api.js';
 import { createValidator } from './validation.js';
+import { showErrorMessage } from './notification.js';
 
 const uploadForm = document.querySelector('.img-upload__form');
 const pageBody = document.querySelector('body');
@@ -15,6 +16,7 @@ const hashtagInput = document.querySelector('.text__hashtags');
 const commentInput = document.querySelector('.text__description');
 
 const effectsList = uploadForm.querySelector('.effects__list');
+const effectsPreview = document.querySelectorAll('.effects__preview');
 
 const smaller = uploadForm.querySelector('.scale__control--smaller');
 const bigger = uploadForm.querySelector('.scale__control--bigger');
@@ -23,6 +25,8 @@ const scaleControlValue = uploadForm.querySelector('.scale__control--value');
 const formSubmitBtn = uploadForm.querySelector('.img-upload__submit');
 const templateSucces = document.querySelector('#success').content;
 const templateError = document.querySelector('#error').content;
+
+const FILE_TYPE = ['jpg', 'jpeg', 'png', 'gif', 'jfif'];
 
 const submitBtnText = {
   IDLE: 'Сохранить',
@@ -38,6 +42,8 @@ const enabledBtn = (text) => {
   formSubmitBtn.disabled = false;
   formSubmitBtn.textContent = text;
 };
+
+let scale = 1;
 
 const closeNotification = (evt) => {
   evt.stopPropagation();
@@ -77,7 +83,11 @@ function closePhotoEditor () {
   pageBody.classList.remove('modal-open');
   document.removeEventListener('keydown', onDocumentKeydown);
   photoEditorResetBtn.removeEventListener('click', onPhotoEditorResetBtnClick);
+  scale = 1;
+  imgPreview.style.transform = `scale(${scale})`;
+  scaleControlValue.value = `${scale * 100}%`;
   uploadFileControl.value = '';
+  resetFilter();
 }
 
 const initUploadModal = () => {
@@ -85,6 +95,21 @@ const initUploadModal = () => {
   validator.addValidators(hashtagInput, commentInput);
 
   uploadFileControl.addEventListener('change', () => {
+    const file = uploadFileControl.files[0];
+    const fileName = file.name.toLowerCase();
+    const fileExt = fileName.split('.').pop();
+    const matches = FILE_TYPE.includes(fileExt);
+    if (matches) {
+      const url = URL.createObjectURL(file);
+      imgPreview.src = url;
+      effectsPreview.forEach((item) => {
+        item.style.backgroundImage = `url(${url})`;
+      });
+    } else {
+      showErrorMessage('Неверный тип файла');
+      uploadFileControl.value = '';
+      return;
+    }
     photoEditorForm.classList.remove('hidden');
     pageBody.classList.add('modal-open');
     photoEditorResetBtn.addEventListener('click', onPhotoEditorResetBtnClick);
@@ -114,7 +139,7 @@ const initUploadModal = () => {
   }
 };
 
-let scale = 1;
+
 const onSmallerBtnClick = () => {
   if (scale > SCALE_STEP) {
     scale -= SCALE_STEP;
