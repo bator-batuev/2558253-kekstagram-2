@@ -43,6 +43,8 @@ const enabledBtn = (text) => {
   formSubmitBtn.textContent = text;
 };
 
+let scale = 1;
+
 const closeNotification = (evt) => {
   evt.stopPropagation();
   const existElement = document.querySelector('.success') || document.querySelector('.error');
@@ -81,7 +83,11 @@ function closePhotoEditor () {
   pageBody.classList.remove('modal-open');
   document.removeEventListener('keydown', onDocumentKeydown);
   photoEditorResetBtn.removeEventListener('click', onPhotoEditorResetBtnClick);
+  scale = 1;
+  imgPreview.style.transform = `scale(${scale})`;
+  scaleControlValue.value = `${scale * 100}%`;
   uploadFileControl.value = '';
+  resetFilter();
 }
 
 const initUploadModal = () => {
@@ -133,7 +139,7 @@ const initUploadModal = () => {
   }
 };
 
-let scale = 1;
+
 const onSmallerBtnClick = () => {
   if (scale > SCALE_STEP) {
     scale -= SCALE_STEP;
