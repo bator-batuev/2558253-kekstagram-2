@@ -10,12 +10,10 @@ const updateSliderOptions = (effect, sliderElement) =>
   sliderElement.noUiSlider.updateOptions(Effects[effect]);
 
 const resetFilter = () => {
-  // imgPreview.style.removeProperty('filter');
   effectSliderContainer.classList.add('hidden');
   imgPreview.className = 'img-upload__preview effects__preview--none';
   imgPreview.style.filter = ''; // Сбрасываем фильтр
   effectLevelValue.value = 100;
-  // imgPreview.classList.replace(selectorImg, 'effects__preview--none');
 };
 
 const onEffectRadioBtnClick = (evt) => {
@@ -23,7 +21,6 @@ const onEffectRadioBtnClick = (evt) => {
   if (currentRadioBtn) {
     const effectBtnValue = currentRadioBtn.value;
     imgPreview.className = `img-upload__preview ${getEffectSelector(effectBtnValue)}`;
-    // imgPreview.classList.replace(selectorImg, getEffectSelector(effectBtnValue));
     updateSliderOptions(effectBtnValue, effectSlider);
   }
 };
