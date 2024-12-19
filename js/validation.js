@@ -7,7 +7,7 @@ const MAX_HASHTAGS = 5;
 const validateHashtag = (value) => {
   const inputText = value.toLowerCase().trim();
 
-  if (inputText.length === 0) {
+  if (!value) {
     return true;
   }
 

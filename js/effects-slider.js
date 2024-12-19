@@ -13,7 +13,7 @@ const resetFilter = () => {
   effectSliderContainer.classList.add('hidden');
   imgPreview.className = 'img-upload__preview effects__preview--none';
   imgPreview.style.filter = ''; // Сбрасываем фильтр
-  effectLevelValue.value = 100;
+  effectLevelValue.value = 0;
 };
 
 const onEffectRadioBtnClick = (evt) => {
@@ -28,15 +28,17 @@ const onEffectRadioBtnClick = (evt) => {
 noUiSlider.create(effectSlider, {
   range: {
     min: 0,
-    max: 100,
+    max: 1,
   },
-  start: 100,
-  step: 1,
+  start: 1,
+  step: 0.01,
   connect: 'lower',
 });
 
 effectSlider.noUiSlider.on('update', () => {
-  effectLevelValue.value = effectSlider.noUiSlider.get();
+  const sliderValue = parseFloat(effectSlider.noUiSlider.get()); // Преобразуем значение в число
+  // Устанавливаем значение в поле ввода в зависимости от того, является ли оно целым числом
+  effectLevelValue.value = Number.isInteger(sliderValue) ? sliderValue.toFixed(0) : sliderValue.toFixed(1);
   const checkedButton = Array.from(effectRadioBtns).find((radio) => radio.checked);
   if (checkedButton.value !== 'none') {
     effectSliderContainer.classList.remove('hidden');

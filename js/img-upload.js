@@ -119,7 +119,9 @@ const initUploadModal = () => {
 
   const sendFormData = async (formElement) => {
     const isValid = validator.validate();
+    let errorElement = formElement.querySelector('.img-upload__field-wrapper--error');
     if (isValid) {
+      errorElement.remove();
       hashtagInput.value = hashtagInput.value.trim().replaceAll(/\s+/g, ' ');
       disabledBtn(submitBtnText.SENDING);
       try {
@@ -129,6 +131,16 @@ const initUploadModal = () => {
         appendNotification(templateError);
       } finally {
         enabledBtn(submitBtnText.IDLE);
+      }
+    } else {
+      // Если форма не валидна
+      errorElement = formElement.querySelector('.img-upload__field-wrapper--error');
+      errorElement.style.display = 'block'; // Показываем элемент с ошибкой
+
+      // Устанавливаем текст ошибки
+      const errorMessage = validator.pristine.getErrors(); // Получаем сообщения об ошибках
+      if (errorMessage.length > 0) {
+        errorElement.textContent = errorMessage[0]; // Устанавливаем первое сообщение об ошибке
       }
     }
   };
