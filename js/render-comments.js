@@ -38,7 +38,7 @@ const renderNextComments = () => {
   // в блок для вставки комментариев записываем содержимое фрагмента
   socialCommentsNode.appendChild(socialCommentsFragment);
   // записываем число отображенных комментариев в счетчик
-  commentsCountNode.firstChild.textContent = `${renderCommentsLength} из `;
+  commentsCountNode.firstChild.textContent = `${renderCommentsLength}`;
   // записываем общее количество комментариев
   commentsCountNode.querySelector('.social__comment-total-count').textContent = comments.length;
   // если число отображенных комментариев больше или равно общему количеству, то...

@@ -25,6 +25,7 @@ const scaleControlValue = uploadForm.querySelector('.scale__control--value');
 const formSubmitBtn = uploadForm.querySelector('.img-upload__submit');
 const templateSucces = document.querySelector('#success').content;
 const templateError = document.querySelector('#error').content;
+// const errorElement = document.querySelector('.img-upload__field-wrapper--error');
 
 const FILE_TYPE = ['jpg', 'jpeg', 'png', 'gif', 'jfif'];
 
@@ -87,6 +88,8 @@ function closePhotoEditor () {
   imgPreview.style.transform = `scale(${scale})`;
   scaleControlValue.value = `${scale * 100}%`;
   uploadFileControl.value = '';
+  hashtagInput.value = '';
+  commentInput.value = '';
   resetFilter();
 }
 
