@@ -18,6 +18,10 @@ export const renderThumbnails = (photos) => {
 
     // Заполняем данными
     thumbnail.querySelector('.picture__img').src = photo.url;
+    if (thumbnail.querySelector('.picture__img').src.endsWith('photos/3.jpg')) {
+      const hashtags = '#fun #party #cool #young';
+      thumbnail.querySelector('.picture__img').setAttribute('alt', hashtags); // Присваиваем атрибут alt элементу изображения
+    }
     thumbnail.querySelector('.picture__likes').textContent = photo.likes;
     thumbnail.querySelector('.picture__comments').textContent = photo.comments.length;
 
