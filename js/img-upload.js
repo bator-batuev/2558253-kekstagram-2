@@ -2,7 +2,7 @@ import { isEscapeKey } from './util.js';
 import { SCALE_STEP } from './const.js';
 import { onEffectRadioBtnClick, resetFilter, imgPreview} from './effects-slider.js';
 import { sendData } from './api.js';
-import { createValidator } from './validation.js';
+import { pristine, addValidators } from './validation.js';
 import { showErrorMessage } from './notification.js';
 
 const uploadForm = document.querySelector('.img-upload__form');
@@ -25,7 +25,6 @@ const scaleControlValue = uploadForm.querySelector('.scale__control--value');
 const formSubmitBtn = uploadForm.querySelector('.img-upload__submit');
 const templateSucces = document.querySelector('#success').content;
 const templateError = document.querySelector('#error').content;
-// const errorElement = document.querySelector('.img-upload__field-wrapper--error');
 
 const FILE_TYPE = ['jpg', 'jpeg', 'png', 'gif', 'jfif'];
 
@@ -91,11 +90,14 @@ function closePhotoEditor () {
   hashtagInput.value = '';
   commentInput.value = '';
   resetFilter();
+  const errorElement = document.querySelector('.pristine-error.img-upload__field-wrapper--error');
+  if (errorElement) {
+    errorElement.remove(); // Удаляем элемент из DOM
+  }
 }
 
 const initUploadModal = () => {
-  const validator = createValidator(uploadForm);
-  validator.addValidators(hashtagInput, commentInput);
+  addValidators(hashtagInput, commentInput);
 
   uploadFileControl.addEventListener('change', () => {
     const file = uploadFileControl.files[0];
@@ -121,7 +123,7 @@ const initUploadModal = () => {
   });
 
   const sendFormData = async (formElement) => {
-    const isValid = validator.validate();
+    const isValid = pristine.validate();
     let errorElement = formElement.querySelector('.img-upload__field-wrapper--error');
     if (isValid) {
       errorElement.remove();
@@ -130,6 +132,8 @@ const initUploadModal = () => {
       try {
         await sendData(new FormData(formElement));
         appendNotification(templateSucces, () => closePhotoEditor(formElement));
+        const effectNoneInput = document.getElementById('effect-none');
+        effectNoneInput.checked = true;
       } catch (error) {
         appendNotification(templateError);
       } finally {
@@ -141,7 +145,7 @@ const initUploadModal = () => {
       errorElement.style.display = 'block'; // Показываем элемент с ошибкой
 
       // Устанавливаем текст ошибки
-      const errorMessage = validator.pristine.getErrors(); // Получаем сообщения об ошибках
+      const errorMessage = pristine.getErrors(); // Получаем сообщения об ошибках
       if (errorMessage.length > 0) {
         errorElement.textContent = errorMessage[0]; // Устанавливаем первое сообщение об ошибке
       }

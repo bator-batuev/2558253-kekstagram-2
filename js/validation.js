@@ -55,37 +55,30 @@ const validateHashtag = (value) => {
 
 const validateComment = (value) => value.length <= MAX_COMMENT_LENGTH;
 
-const createValidator = (form) => {
-  const pristine = new Pristine(form, {
-    classTo: 'img-upload__form',
-    errorTextClass: 'img-upload__field-wrapper--error',
-    errorTextParent: 'img-upload__field-wrapper',
+
+const pristine = new Pristine(document.querySelector('.img-upload__form'), {
+  classTo: 'img-upload__form',
+  errorTextClass: 'img-upload__field-wrapper--error',
+  errorTextParent: 'img-upload__field-wrapper',
+});
+
+const addValidators = (hashtagInput, commentInput) => {
+  pristine.addValidator(
+    hashtagInput,
+    (value) => validateHashtag(value) === true,
+    validateHashtag
+  );
+
+  pristine.addValidator(
+    commentInput,
+    validateComment,
+    MAX_COMMENT_LENGTH_ERROR_MESSAGE
+  );
+
+  commentInput.addEventListener('input', (evt) => {
+    evt.preventDefault();
+    pristine.validate();
   });
-
-  const addValidators = (hashtagInput, commentInput) => {
-    pristine.addValidator(
-      hashtagInput,
-      (value) => validateHashtag(value) === true,
-      validateHashtag
-    );
-
-    pristine.addValidator(
-      commentInput,
-      validateComment,
-      MAX_COMMENT_LENGTH_ERROR_MESSAGE
-    );
-
-    commentInput.addEventListener('input', (evt) => {
-      evt.preventDefault();
-      pristine.validate();
-    });
-  };
-
-  return {
-    pristine,
-    addValidators,
-    validate: () => pristine.validate()
-  };
 };
 
-export { createValidator };
+export { pristine, addValidators };
