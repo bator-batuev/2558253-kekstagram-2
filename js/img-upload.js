@@ -126,7 +126,6 @@ const initUploadModal = () => {
     const isValid = pristine.validate();
     let errorElement = formElement.querySelector('.img-upload__field-wrapper--error');
     if (isValid) {
-      errorElement.remove();
       hashtagInput.value = hashtagInput.value.trim().replaceAll(/\s+/g, ' ');
       disabledBtn(submitBtnText.SENDING);
       try {
@@ -145,9 +144,10 @@ const initUploadModal = () => {
       errorElement.style.display = 'block'; // Показываем элемент с ошибкой
 
       // Устанавливаем текст ошибки
-      const errorMessage = pristine.getErrors(); // Получаем сообщения об ошибках
-      if (errorMessage.length > 0) {
-        errorElement.textContent = errorMessage[0]; // Устанавливаем первое сообщение об ошибке
+      const errorMessages = pristine.getErrors(); // Получаем сообщения об ошибках
+      if (errorMessages.length > 0) {
+        const firstErrorMessage = errorMessages[0].message; // Извлекаем текст ошибки
+        errorElement.textContent = firstErrorMessage; // Устанавливаем текст ошибки
       }
     }
   };
