@@ -1,3 +1,4 @@
+const DEBOUNCE_DELAY = 500;
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
 const numDecline = (num, nominative, genetiveSingular, genetivePlural) => {
@@ -14,17 +15,12 @@ const numDecline = (num, nominative, genetiveSingular, genetivePlural) => {
     : genetiveSingular;
 };
 
-const DEBOUNCE_DELAY = 500;
-
 function debounce (callback, timeoutDelay = DEBOUNCE_DELAY) {
-  // Используем замыкания, чтобы id таймаута у нас навсегда приклеился
-  // к возвращаемой функции с setTimeout, тогда мы его сможем перезаписывать
   let timeoutId;
-
   return (...rest) => {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
   };
 }
 
-export { isEscapeKey, numDecline, debounce };
+export {isEscapeKey, numDecline, debounce};

@@ -1,4 +1,3 @@
-// мин и макс значения id,лайков,аватаров и комментариев;количество объектов в итоговом массиве
 const Like = {
   MIN: 15,
   MAX: 200
@@ -92,4 +91,4 @@ const styleFilterByEffect = {
   heat: StyleFilter.heat
 };
 
-export { Like, Avatar, Comments, SIMILAR_OBJECTS_COUNT, SCALE_STEP, MAX_COMMENT_LENGTH, MAX_COMMENT_LENGTH_ERROR_MESSAGE, getEffectSelector, styleFilterByEffect, Effects };
+export {Like, Avatar, Comments, SIMILAR_OBJECTS_COUNT, SCALE_STEP, MAX_COMMENT_LENGTH, MAX_COMMENT_LENGTH_ERROR_MESSAGE, getEffectSelector, styleFilterByEffect, Effects};

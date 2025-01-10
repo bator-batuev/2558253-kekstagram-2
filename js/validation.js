@@ -1,12 +1,11 @@
-import { MAX_COMMENT_LENGTH, MAX_COMMENT_LENGTH_ERROR_MESSAGE } from './const.js';
-import { numDecline } from './util.js';
+import {MAX_COMMENT_LENGTH, MAX_COMMENT_LENGTH_ERROR_MESSAGE} from './const.js';
+import {numDecline} from './util.js';
 
 const MAX_HASHTAG_SYMBOLS = 20;
 const MAX_HASHTAGS = 5;
 
 const validateHashtag = (value) => {
   const inputText = value.toLowerCase().trim();
-
   if (!value) {
     return true;
   }
@@ -49,15 +48,13 @@ const validateHashtag = (value) => {
       return rule.error;
     }
   }
-
   return true;
 };
 
 const validateComment = (value) => value.length <= MAX_COMMENT_LENGTH;
 
-
 const pristine = new Pristine(document.querySelector('.img-upload__form'), {
-  classTo: 'img-upload__form',
+  classTo: 'img-upload__field-wrapper',
   errorTextClass: 'img-upload__field-wrapper--error',
   errorTextParent: 'img-upload__field-wrapper',
 });
@@ -74,11 +71,6 @@ const addValidators = (hashtagInput, commentInput) => {
     validateComment,
     MAX_COMMENT_LENGTH_ERROR_MESSAGE
   );
-
-  commentInput.addEventListener('input', (evt) => {
-    evt.preventDefault();
-    pristine.validate();
-  });
 };
 
-export { pristine, addValidators };
+export {pristine, addValidators};
