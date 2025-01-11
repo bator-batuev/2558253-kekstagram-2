@@ -1,9 +1,9 @@
-import { isEscapeKey } from './util.js';
-import { SCALE_STEP } from './const.js';
-import { onEffectRadioBtnClick, resetFilter, imgPreview} from './effects-slider.js';
-import { sendData } from './api.js';
-import { createValidator } from './validation.js';
-import { showErrorMessage } from './notification.js';
+import {isEscapeKey} from './util.js';
+import {SCALE_STEP} from './const.js';
+import {onEffectRadioBtnClick, resetFilter, imgPreview} from './effects-slider.js';
+import {sendData} from './api.js';
+import {pristine, addValidators} from './validation.js';
+import {showErrorMessage, appendNotification} from './notification.js';
 
 const uploadForm = document.querySelector('.img-upload__form');
 const pageBody = document.querySelector('body');
@@ -18,15 +18,16 @@ const commentInput = document.querySelector('.text__description');
 const effectsList = uploadForm.querySelector('.effects__list');
 const effectsPreview = document.querySelectorAll('.effects__preview');
 
-const smaller = uploadForm.querySelector('.scale__control--smaller');
-const bigger = uploadForm.querySelector('.scale__control--bigger');
+const scaleControlSmaller = uploadForm.querySelector('.scale__control--smaller');
+const scaleControlBigger = uploadForm.querySelector('.scale__control--bigger');
 const scaleControlValue = uploadForm.querySelector('.scale__control--value');
 
 const formSubmitBtn = uploadForm.querySelector('.img-upload__submit');
 const templateSucces = document.querySelector('#success').content;
 const templateError = document.querySelector('#error').content;
 
-const FILE_TYPE = ['jpg', 'jpeg', 'png', 'gif', 'jfif'];
+const FILE_TYPES = ['jpg', 'jpeg', 'png', 'gif', 'jfif'];
+let scale = 1;
 
 const submitBtnText = {
   IDLE: 'Сохранить',
@@ -43,27 +44,6 @@ const enabledBtn = (text) => {
   formSubmitBtn.textContent = text;
 };
 
-let scale = 1;
-
-const closeNotification = (evt) => {
-  evt.stopPropagation();
-  const existElement = document.querySelector('.success') || document.querySelector('.error');
-  const closeBtn = existElement.querySelector('button');
-  if (evt.target === existElement || evt.target === closeBtn || isEscapeKey(evt)) {
-    existElement.remove();
-    pageBody.removeEventListener('click', closeNotification);
-    pageBody.removeEventListener('keydown', closeNotification);
-  }
-};
-
-const appendNotification = (template, trigger = null) => {
-  trigger?.();
-  const notificationNode = template.cloneNode(true);
-  pageBody.append(notificationNode);
-  pageBody.addEventListener('click', closeNotification);
-  pageBody.addEventListener('keydown', closeNotification);
-};
-
 const onPhotoEditorResetBtnClick = () => closePhotoEditor();
 
 const onDocumentKeydown = (evt) => {
@@ -78,67 +58,97 @@ const onDocumentKeydown = (evt) => {
   }
 };
 
-function closePhotoEditor () {
+const showPhotoEditor = () => {
+  photoEditorForm.classList.remove('hidden');
+};
+
+const hidePhotoEditor = () => {
   photoEditorForm.classList.add('hidden');
+};
+
+const addModalOpenClass = () => {
+  pageBody.classList.add('modal-open');
+};
+
+const removeModalOpenClass = () => {
   pageBody.classList.remove('modal-open');
+};
+
+function closePhotoEditor () {
+  hidePhotoEditor();
+  removeModalOpenClass();
   document.removeEventListener('keydown', onDocumentKeydown);
   photoEditorResetBtn.removeEventListener('click', onPhotoEditorResetBtnClick);
-  scale = 1;
-  imgPreview.style.transform = `scale(${scale})`;
-  scaleControlValue.value = `${scale * 100}%`;
-  uploadFileControl.value = '';
+  uploadForm.reset();
   resetFilter();
+  pristine.reset();
 }
 
-const initUploadModal = () => {
-  const validator = createValidator(uploadForm);
-  validator.addValidators(hashtagInput, commentInput);
-
-  uploadFileControl.addEventListener('change', () => {
-    const file = uploadFileControl.files[0];
-    const fileName = file.name.toLowerCase();
-    const fileExt = fileName.split('.').pop();
-    const matches = FILE_TYPE.includes(fileExt);
-    if (matches) {
-      const url = URL.createObjectURL(file);
-      imgPreview.src = url;
-      effectsPreview.forEach((item) => {
-        item.style.backgroundImage = `url(${url})`;
-      });
-    } else {
-      showErrorMessage('Неверный тип файла');
-      uploadFileControl.value = '';
-      return;
+const sendFormData = async (formElement) => {
+  const isValid = pristine.validate();
+  if (isValid) {
+    hashtagInput.value = hashtagInput.value.trim().replaceAll(/\s+/g, ' ');
+    disabledBtn(submitBtnText.SENDING);
+    try {
+      await sendData(new FormData(formElement));
+      appendNotification(templateSucces, () => closePhotoEditor(formElement));
+      const effectNoneInput = document.getElementById('effect-none');
+      effectNoneInput.checked = true;
+    } catch (error) {
+      appendNotification(templateError);
+    } finally {
+      enabledBtn(submitBtnText.IDLE);
     }
-    photoEditorForm.classList.remove('hidden');
-    pageBody.classList.add('modal-open');
-    photoEditorResetBtn.addEventListener('click', onPhotoEditorResetBtnClick);
-    document.addEventListener('keydown', onDocumentKeydown);
-    uploadForm.addEventListener('submit', onFormSubmit);
-  });
-
-  const sendFormData = async (formElement) => {
-    const isValid = validator.validate();
-    if (isValid) {
-      hashtagInput.value = hashtagInput.value.trim().replaceAll(/\s+/g, ' ');
-      disabledBtn(submitBtnText.SENDING);
-      try {
-        await sendData(new FormData(formElement));
-        appendNotification(templateSucces, () => closePhotoEditor(formElement));
-      } catch (error) {
-        appendNotification(templateError);
-      } finally {
-        enabledBtn(submitBtnText.IDLE);
-      }
-    }
-  };
-
-  function onFormSubmit (evt) {
-    evt.preventDefault();
-    sendFormData(evt.target);
   }
 };
 
+function onFormSubmit (evt) {
+  evt.preventDefault();
+  sendFormData(evt.target);
+}
+
+const setFilePreview = () => {
+  const file = uploadFileControl.files[0];
+  const url = URL.createObjectURL(file);
+  imgPreview.src = url;
+  effectsPreview.forEach((item) => {
+    item.style.backgroundImage = `url(${url})`;
+  }
+  );
+};
+
+const openUploadModal = () => {
+  showPhotoEditor();
+  addModalOpenClass();
+  photoEditorResetBtn.addEventListener('click', onPhotoEditorResetBtnClick);
+  document.addEventListener('keydown', onDocumentKeydown);
+  uploadForm.addEventListener('submit', onFormSubmit);
+};
+
+const isValidType = (file) => {
+  const fileName = file.name.toLowerCase();
+  return FILE_TYPES.some((item) => fileName.endsWith(item));
+};
+
+const isFileValid = () => {
+  const file = uploadFileControl.files[0];
+  return file && isValidType(file);
+};
+
+const onUploadFileControlChange = () => {
+  if (isFileValid()) {
+    setFilePreview();
+    openUploadModal();
+    addValidators(hashtagInput, commentInput);
+    return;
+  }
+  showErrorMessage('Неверный тип файла');
+  uploadFileControl.value = '';
+};
+
+const initUploadModal = () => {
+  uploadFileControl.addEventListener('change', onUploadFileControlChange);
+};
 
 const onSmallerBtnClick = () => {
   if (scale > SCALE_STEP) {
@@ -161,7 +171,7 @@ effectsList.addEventListener('change', (evt) => {
   onEffectRadioBtnClick(evt);
 });
 
-smaller.addEventListener('click', onSmallerBtnClick);
-bigger.addEventListener('click', onBiggerBtnClick);
+scaleControlSmaller.addEventListener('click', onSmallerBtnClick);
+scaleControlBigger.addEventListener('click', onBiggerBtnClick);
 
-export { uploadForm, initUploadModal };
+export {uploadForm, initUploadModal};

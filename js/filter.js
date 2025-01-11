@@ -1,10 +1,16 @@
-import { debounce } from './util.js';
-import { renderThumbnails } from './thumbnails.js';
+import {debounce} from './util.js';
+import {renderThumbnails} from './thumbnails.js';
+
+const ACTIVE_BUTTON_CLASS = 'img-filters__button--active';
+const MAX_PICTURE_COUNT = 10;
 
 let currentFilter = 'filter-default';
 let pictures = [];
 const filterElement = document.querySelector('.img-filters');
-const ACTIVE_BUTTON_CLASS = 'img-filters__button--active';
+const SORTFUNC = {
+  random: () => 0.5 - Math.random(),
+  discussed: (a, b) => b.comments.length - a.comments.length,
+};
 
 const debounceRender = debounce(renderThumbnails);
 
@@ -14,14 +20,23 @@ const Filter = {
   DISCUSSED: 'filter-discussed',
 };
 
-const SORTFUNC = {
-  random: () => 0.5 - Math.random(),
-  discussed: (a, b) => b.comments.length - a.comments.length,
+const applyFilter = () => {
+  let filteredPictures = [];
+  switch (currentFilter) {
+    case Filter.DEFAULT:
+      filteredPictures = pictures;
+      break;
+    case Filter.RANDOM:
+      filteredPictures = pictures.toSorted(SORTFUNC.random).slice(0, MAX_PICTURE_COUNT);
+      break;
+    case Filter.DISCUSSED:
+      filteredPictures = pictures.toSorted(SORTFUNC.discussed);
+      break;
+  }
+  debounceRender(filteredPictures);
 };
 
-const MAX_PICTURE_COUNT = 10;
-
-function onFilterChange (evt) {
+const onFilterChange = (evt) => {
   const targetButton = evt.target;
   const activeButton = document.querySelector(`.${ACTIVE_BUTTON_CLASS}`);
   if (!activeButton) {
@@ -37,28 +52,12 @@ function onFilterChange (evt) {
   targetButton.classList.toggle(ACTIVE_BUTTON_CLASS);
   currentFilter = targetButton.getAttribute('id');
   applyFilter();
-}
+};
 
-function applyFilter() {
-  let filteredPictures = [];
-  switch (currentFilter) {
-    case Filter.DEFAULT:
-      filteredPictures = pictures;
-      break;
-    case Filter.RANDOM:
-      filteredPictures = pictures.toSorted(SORTFUNC.random).slice(0, MAX_PICTURE_COUNT);
-      break;
-    case Filter.DISCUSSED:
-      filteredPictures = pictures.toSorted(SORTFUNC.discussed);
-      break;
-  }
-  debounceRender(filteredPictures);
-}
-
-function initFilter(photos) {
+const initFilter = (photos) => {
   filterElement.classList.remove('img-filters--inactive');
   filterElement.addEventListener('click', onFilterChange);
   pictures = photos;
-}
+};
 
-export { initFilter };
+export {initFilter};
