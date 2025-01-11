@@ -1,19 +1,3 @@
-const Like = {
-  MIN: 15,
-  MAX: 200
-};
-
-const Avatar = {
-  MIN: 1,
-  MAX: 6
-};
-const Comments = {
-  MIN: 0,
-  MAX: 30
-};
-
-const SIMILAR_OBJECTS_COUNT = 25;
-
 const SCALE_STEP = 0.25;
 
 const MAX_COMMENT_LENGTH = 140;
@@ -91,4 +75,4 @@ const styleFilterByEffect = {
   heat: StyleFilter.heat
 };
 
-export {Like, Avatar, Comments, SIMILAR_OBJECTS_COUNT, SCALE_STEP, MAX_COMMENT_LENGTH, MAX_COMMENT_LENGTH_ERROR_MESSAGE, getEffectSelector, styleFilterByEffect, Effects};
+export {SCALE_STEP, MAX_COMMENT_LENGTH, MAX_COMMENT_LENGTH_ERROR_MESSAGE, getEffectSelector, styleFilterByEffect, Effects};

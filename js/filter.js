@@ -8,8 +8,8 @@ let currentFilter = 'filter-default';
 let pictures = [];
 const filterElement = document.querySelector('.img-filters');
 const SORTFUNC = {
-  random: () => 0.5 - Math.random(),
-  discussed: (a, b) => b.comments.length - a.comments.length,
+  getRandomValue: () => 0.5 - Math.random(),
+  sortByComments: (a, b) => b.comments.length - a.comments.length,
 };
 
 const debounceRender = debounce(renderThumbnails);
@@ -27,10 +27,10 @@ const applyFilter = () => {
       filteredPictures = pictures;
       break;
     case Filter.RANDOM:
-      filteredPictures = pictures.toSorted(SORTFUNC.random).slice(0, MAX_PICTURE_COUNT);
+      filteredPictures = pictures.toSorted(SORTFUNC.getRandomValue).slice(0, MAX_PICTURE_COUNT);
       break;
     case Filter.DISCUSSED:
-      filteredPictures = pictures.toSorted(SORTFUNC.discussed);
+      filteredPictures = pictures.toSorted(SORTFUNC.sortByComments);
       break;
   }
   debounceRender(filteredPictures);

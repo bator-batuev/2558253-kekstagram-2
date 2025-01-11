@@ -84,6 +84,12 @@ function closePhotoEditor () {
   pristine.reset();
 }
 
+const resetScale = () => {
+  scale = 1;
+  imgPreview.style.transform = `scale(${scale})`;
+  scaleControlValue.value = `${scale * 100}%`;
+};
+
 const sendFormData = async (formElement) => {
   const isValid = pristine.validate();
   if (isValid) {
@@ -91,7 +97,8 @@ const sendFormData = async (formElement) => {
     disabledBtn(submitBtnText.SENDING);
     try {
       await sendData(new FormData(formElement));
-      appendNotification(templateSucces, () => closePhotoEditor(formElement));
+      appendNotification(templateSucces, () => closePhotoEditor(formElement)
+      );
       const effectNoneInput = document.getElementById('effect-none');
       effectNoneInput.checked = true;
     } catch (error) {
@@ -137,6 +144,7 @@ const isFileValid = () => {
 
 const onUploadFileControlChange = () => {
   if (isFileValid()) {
+    resetScale();
     setFilePreview();
     openUploadModal();
     addValidators(hashtagInput, commentInput);

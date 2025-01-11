@@ -1,7 +1,7 @@
 const DEBOUNCE_DELAY = 500;
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
-const numDecline = (num, nominative, genetiveSingular, genetivePlural) => {
+const declineNumber = (num, nominative, genetiveSingular, genetivePlural) => {
   if (!Number.isFinite(num)) {
     throw new Error('Необходимо ввести число');
   }
@@ -23,4 +23,4 @@ function debounce (callback, timeoutDelay = DEBOUNCE_DELAY) {
   };
 }
 
-export {isEscapeKey, numDecline, debounce};
+export {isEscapeKey, declineNumber, debounce};

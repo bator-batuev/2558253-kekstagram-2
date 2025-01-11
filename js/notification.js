@@ -4,23 +4,34 @@ const REMOVE_MESSAGE_TIMEOUT = 5000;
 
 const body = document.body;
 
-const closeNotification = (evt) => {
+const onNotificationCloseClick = (evt) => {
   evt.stopPropagation();
   const existElement = document.querySelector('.success') || document.querySelector('.error');
   const closeBtn = existElement.querySelector('button');
-  if (evt.target === existElement || evt.target === closeBtn || isEscapeKey(evt)) {
+
+  if (evt.target === existElement || evt.target === closeBtn) {
     existElement.remove();
-    body.removeEventListener('click', closeNotification);
-    body.removeEventListener('keydown', closeNotification);
+    body.removeEventListener('click', onNotificationCloseClick);
+    body.removeEventListener('keydown', onNotificationCloseKeydown);
   }
 };
+
+function onNotificationCloseKeydown (evt) {
+  const existElement = document.querySelector('.success') || document.querySelector('.error');
+
+  if (isEscapeKey(evt)) {
+    existElement.remove();
+    body.removeEventListener('click', onNotificationCloseClick);
+    body.removeEventListener('keydown', onNotificationCloseKeydown);
+  }
+}
 
 const appendNotification = (template, trigger = null) => {
   trigger?.();
   const notificationNode = template.cloneNode(true);
   body.append(notificationNode);
-  body.addEventListener('click', closeNotification);
-  body.addEventListener('keydown', closeNotification);
+  body.addEventListener('click', onNotificationCloseClick);
+  body.addEventListener('keydown', onNotificationCloseKeydown);
 };
 
 const errorLoadDataTemplate = document.querySelector('#data-error').content;
