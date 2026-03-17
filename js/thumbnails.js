@@ -20,5 +20,6 @@ export const renderThumbnails = () => {
 
     container.append(thumbnail);
   });
+
   pictureBlock.append(container);
 };
