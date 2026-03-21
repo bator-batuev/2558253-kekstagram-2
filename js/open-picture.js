@@ -41,9 +41,11 @@ export const openPicture = (pictureId) => {
 
   comments.forEach(({avatar, message, name}) => {
     const commentElement = commentTemplate.cloneNode(true);
+
     commentElement.querySelector('.social__picture').src = avatar;
     commentElement.querySelector('.social__picture').alt = name;
     commentElement.querySelector('.social__text').textContent = message;
+
     commentsFragment.appendChild(commentElement);
   });
 
@@ -51,11 +53,9 @@ export const openPicture = (pictureId) => {
 
   commentsCounter.classList.add('hidden');
   commentsLoader.classList.add('hidden');
-
+  document.body.classList.add('modal-open');
   pictureElement.classList.remove('hidden');
 
-  pictureCloseBtn.addEventListener('click', onPictureCloseBtnClick);
-
-  document.body.classList.add('modal-open');
   document.addEventListener('keydown', onEscKeydown);
+  pictureCloseBtn.addEventListener('click', onPictureCloseBtnClick);
 };
