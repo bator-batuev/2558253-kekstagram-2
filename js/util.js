@@ -25,3 +25,5 @@ export const createCounter = (start = 1) => {
   let count = start;
   return () => count++;
 };
+
+export const isEscapeKey = (evt) => evt.key === 'Escape';
