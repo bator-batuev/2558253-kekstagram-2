@@ -4,7 +4,6 @@ const MAX_SYMBOLS = 20;
 const MAX_HASHTAGS = 5;
 
 export const isHashtagValid = (value) => {
-
   const inputText = value.toLowerCase().trim();
 
   if (inputText.length === 0) {
