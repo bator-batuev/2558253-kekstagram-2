@@ -28,13 +28,11 @@ pristine.addValidator(hashtagInput, (value) => isHashtagValid(value) === true, i
 const onPhotoEditorResetBtnClick = () => closePhotoEditor();
 
 const onDocumentKeydown = (evt) => {
-
   if (isEscapeKey(evt)) {
     evt.preventDefault();
 
     if (document.activeElement === hashtagInput || document.activeElement === commentInput) {
       evt.stopPropagation();
-
     } else {
       closePhotoEditor();
     }
@@ -45,7 +43,6 @@ const onFormSubmit = (evt) => {
   evt.preventDefault();
 
   if (pristine.validate()) {
-
     hashtagInput.value = hashtagInput.value.trim().replaceAll(/\s+/g, ' ');
     uploadForm.submit();
   }
@@ -56,7 +53,6 @@ commentInput.addEventListener('input', () => {
 });
 
 function closePhotoEditor() {
-
   photoEditorForm.classList.add('hidden');
   pageBody.classList.remove('modal-open');
 
@@ -67,7 +63,6 @@ function closePhotoEditor() {
 }
 
 export const initUploadModal = () => {
-
   uploadFileControl.addEventListener('change', () => {
 
     photoEditorForm.classList.remove('hidden');
