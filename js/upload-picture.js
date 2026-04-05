@@ -1,6 +1,8 @@
 import { isEscapeKey } from './util.js';
-import { isHashtagValid } from './validate-hashtag.js';
-import { imgPreview, onEffectChange } from './effects-slider.js';
+import { imgPreview, onEffectChange, resetFilter } from './effects-slider.js';
+import { createValidator } from './validation.js';
+import { sendData } from './api.js';
+import { appendNotification } from './notification.js';
 
 const pageBody = document.querySelector('body');
 const uploadForm = document.querySelector('.img-upload__form');
@@ -13,23 +15,26 @@ const zoomOutBtn = uploadForm.querySelector('.scale__control--smaller');
 const zoomInBtn = uploadForm.querySelector('.scale__control--bigger');
 const scaleControlValue = uploadForm.querySelector('.scale__control--value');
 const effectsList = uploadForm.querySelector('.effects__list');
+const formSubmitBtn = uploadForm.querySelector('.img-upload__submit');
+const templateSucces = document.querySelector('#success').content;
+const templateError = document.querySelector('#error').content;
 
-const MAX_COMMENT_LENGTH = 140;
-const MAX_COMMENT_LENGTH_ERROR_MESSAGE = 'Превышено допустимое количество символов';
+const submitBtnText = {
+  IDLE: 'Сохранить',
+  SENDING: 'Сохраняю...',
+};
+
 const SCALE_STEP = 0.25;
 
-function validateComment(value) {
-  return value.length <= MAX_COMMENT_LENGTH;
-}
+const disabledBtn = (text) => {
+  formSubmitBtn.disabled = true;
+  formSubmitBtn.textContent = text;
+};
 
-const pristine = new Pristine(uploadForm, {
-  classTo: 'img-upload__form',
-  errorTextClass: 'img-upload__field-wrapper--error',
-  errorTextParent: 'img-upload__field-wrapper',
-});
-
-pristine.addValidator(commentInput, validateComment, MAX_COMMENT_LENGTH_ERROR_MESSAGE);
-pristine.addValidator(hashtagInput, (value) => isHashtagValid(value) === true, isHashtagValid);
+const enabledBtn = (text) => {
+  formSubmitBtn.disabled = false;
+  formSubmitBtn.textContent = text;
+};
 
 const onPhotoEditorResetBtnClick = () => closePhotoEditor();
 
@@ -40,17 +45,9 @@ const onDocumentKeydown = (evt) => {
     if (document.activeElement === hashtagInput || document.activeElement === commentInput) {
       evt.stopPropagation();
     } else {
+      uploadForm.reset();
       closePhotoEditor();
     }
-  }
-};
-
-const onFormSubmit = (evt) => {
-  evt.preventDefault();
-
-  if (pristine.validate()) {
-    hashtagInput.value = hashtagInput.value.trim().replaceAll(/\s+/g, ' ');
-    uploadForm.submit();
   }
 };
 
@@ -71,9 +68,6 @@ const onZoomInBtnClick = () => {
   }
 };
 
-commentInput.addEventListener('input', () => {
-  pristine.validate();
-});
 zoomOutBtn.addEventListener('click', onZoomOutBtnClick);
 zoomInBtn.addEventListener('click', onZoomInBtnClick);
 effectsList.addEventListener('change', onEffectChange);
@@ -85,12 +79,20 @@ function closePhotoEditor() {
   document.removeEventListener('keydown', onDocumentKeydown);
   photoEditorResetBtn.removeEventListener('click', onPhotoEditorResetBtnClick);
 
+  uploadForm.reset();
+  resetFilter();
+  imgPreview.style.transform = 'scale(1)';
+  scale = 1;
+  scaleControlValue.value = '100%';
   uploadFileControl.value = '';
 }
 
 export const initUploadModal = () => {
-  uploadFileControl.addEventListener('change', () => {
+  const validator = createValidator(uploadForm);
 
+  validator.addValidators(hashtagInput, commentInput);
+
+  uploadFileControl.addEventListener('change', () => {
     photoEditorForm.classList.remove('hidden');
     pageBody.classList.add('modal-open');
 
@@ -98,4 +100,30 @@ export const initUploadModal = () => {
     document.addEventListener('keydown', onDocumentKeydown);
     uploadForm.addEventListener('submit', onFormSubmit);
   });
+
+  const sendFormData = async (formElement) => {
+    const isValid = validator.validate();
+
+    if (isValid) {
+      hashtagInput.value = hashtagInput.value.trim().replaceAll(/\s+/g, ' ');
+
+      disabledBtn(submitBtnText.SENDING);
+
+      try {
+        await sendData(new FormData(formElement));
+
+        appendNotification(templateSucces, () => closePhotoEditor(formElement));
+      } catch (error) {
+        appendNotification(templateError);
+      } finally {
+        enabledBtn(submitBtnText.IDLE);
+      }
+    }
+  };
+
+  function onFormSubmit (evt) {
+    evt.preventDefault();
+
+    sendFormData(evt.target);
+  }
 };
