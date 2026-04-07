@@ -5,8 +5,6 @@ const REMOVE_MESSAGE_TIMEOUT = 5000;
 const body = document.body;
 
 export const closeNotification = (evt) => {
-  evt.stopPropagation();
-
   const existElement = document.querySelector('.success') || document.querySelector('.error');
   const closeBtn = existElement.querySelector('button');
 
