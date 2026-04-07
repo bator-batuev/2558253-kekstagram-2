@@ -2,8 +2,10 @@ import { numDecline } from './util.js';
 
 const MAX_SYMBOLS = 20;
 const MAX_HASHTAGS = 5;
+const MAX_COMMENT_LENGTH = 140;
+const MAX_COMMENT_LENGTH_ERROR_MESSAGE = 'Превышено допустимое количество символов';
 
-export const isHashtagValid = (value) => {
+const validateHashtag = (value) => {
   const inputText = value.toLowerCase().trim();
 
   if (inputText.length === 0) {
@@ -50,4 +52,29 @@ export const isHashtagValid = (value) => {
   }
 
   return true;
+};
+
+const validateComment = (value) => value.length <= MAX_COMMENT_LENGTH;
+
+export const createValidator = (form) => {
+  const pristine = new Pristine(form, {
+    classTo: 'img-upload__form',
+    errorTextClass: 'img-upload__field-wrapper--error',
+    errorTextParent: 'img-upload__field-wrapper',
+  });
+
+  const addValidators = (hashtagInput, commentInput) => {
+    pristine.addValidator(hashtagInput, (value) => validateHashtag(value) === true, validateHashtag);
+    pristine.addValidator(commentInput, validateComment, MAX_COMMENT_LENGTH_ERROR_MESSAGE);
+
+    commentInput.addEventListener('input', () => {
+      pristine.validate();
+    });
+  };
+
+  return {
+    pristine,
+    addValidators,
+    validate: () => pristine.validate()
+  };
 };

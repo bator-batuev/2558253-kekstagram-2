@@ -1,5 +1,4 @@
 import { renderComments, clearComments } from './render-comments.js';
-import { pictures } from './thumbnails.js';
 import { isEscapeKey } from './util.js';
 
 const pictureElement = document.querySelector('.big-picture');
@@ -30,12 +29,8 @@ function closePicture () {
   document.removeEventListener('keydown', onEscKeydown);
 }
 
-export const openPicture = (pictureId) => {
+export const openPicture = ({url, description, likes, comments}) => {
   clearComments();
-
-  const currentPicture = pictures.find((picture) => picture.id === Number(pictureId));
-  const {url, description, likes, comments} = currentPicture;
-
 
   pictureImg.src = url;
   pictureLikes.textContent = likes;

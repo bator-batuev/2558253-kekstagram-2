@@ -52,6 +52,14 @@ noUiSlider.create(sliderElement, {
   connect: 'lower',
 });
 
+export const resetFilter = () => {
+  effectLevel.classList.add('hidden');
+  imgPreview.className = 'img-upload__preview effects__preview--none';
+
+  imgPreview.style.filter = '';
+  effectLevelValue.value = 0;
+};
+
 effectLevel.classList.add('hidden');
 
 sliderElement.noUiSlider.on('update', () => {
