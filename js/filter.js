@@ -26,18 +26,16 @@ function onFilterChange (evt) {
 
   const activeButton = document.querySelector(`.${ACTIVE_BUTTON_CLASS}`);
 
-  if (!activeButton) {
-    return;
-  }
-  if (!targetButton.matches('button')) {
-    return;
-  }
-  if (activeButton === targetButton) {
+  if (
+    !activeButton ||
+    !targetButton.matches('button') ||
+    activeButton === targetButton
+  ) {
     return;
   }
 
-  activeButton.classList.toggle(ACTIVE_BUTTON_CLASS);
-  targetButton.classList.toggle(ACTIVE_BUTTON_CLASS);
+  activeButton.classList.remove(ACTIVE_BUTTON_CLASS);
+  targetButton.classList.add(ACTIVE_BUTTON_CLASS);
 
   currentFilter = targetButton.getAttribute('id');
 

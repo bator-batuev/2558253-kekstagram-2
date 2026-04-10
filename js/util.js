@@ -22,6 +22,6 @@ export const debounce = (callback, timeoutDelay = DEBOUNCE_DELAY) => {
   return (...rest) => {
     clearTimeout(timeoutId);
 
-    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+    timeoutId = setTimeout(() => callback(...rest), timeoutDelay);
   };
 };
