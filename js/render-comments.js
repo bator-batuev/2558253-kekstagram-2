@@ -32,7 +32,7 @@ const renderNextComments = () => {
 
   commentsElement.append(commentsFragment);
 
-  commentsCounter.firstChild.textContent = `${renderedCommentsLength} `;
+  commentsCounter.firstChild.textContent = `${renderedCommentsLength}`;
   commentsCounter.querySelector('.social__comment-total-count').textContent = currentComments.length;
 
   if (renderedCommentsLength >= currentComments.length) {

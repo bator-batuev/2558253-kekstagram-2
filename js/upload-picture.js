@@ -91,6 +91,7 @@ zoomOutBtn.addEventListener('click', onZoomOutBtnClick);
 zoomInBtn.addEventListener('click', onZoomInBtnClick);
 effectsList.addEventListener('change', onEffectChange);
 
+let validator;
 function closePhotoEditor() {
   hidePhotoEditor();
   removeModalOpenClass();
@@ -99,6 +100,7 @@ function closePhotoEditor() {
   photoEditorResetBtn.removeEventListener('click', onPhotoEditorResetBtnClick);
 
   uploadForm.reset();
+  validator.reset();
   resetFilter();
 
   imgPreview.style.transform = 'scale(1)';
@@ -130,8 +132,7 @@ const isFileValid = () => {
   return file && isValidType(file);
 };
 
-let validator;
-const openUploadModal = () => {
+function openUploadModal () {
   showPhotoEditor();
   addModalOpenClass();
 
@@ -141,7 +142,7 @@ const openUploadModal = () => {
 
   validator = createValidator(uploadForm);
   validator.addValidators(hashtagInput, commentInput);
-};
+}
 
 const onUploadFileControlChange = () => {
   if (isFileValid()) {

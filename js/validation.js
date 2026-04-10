@@ -58,7 +58,7 @@ const validateComment = (value) => value.length <= MAX_COMMENT_LENGTH;
 
 export const createValidator = (form) => {
   const pristine = new Pristine(form, {
-    classTo: 'img-upload__form',
+    classTo: 'img-upload__field-wrapper',
     errorTextClass: 'img-upload__field-wrapper--error',
     errorTextParent: 'img-upload__field-wrapper',
   });
@@ -75,6 +75,7 @@ export const createValidator = (form) => {
   return {
     pristine,
     addValidators,
-    validate: () => pristine.validate()
+    validate: () => pristine.validate(),
+    reset: () => pristine.reset(),
   };
 };
