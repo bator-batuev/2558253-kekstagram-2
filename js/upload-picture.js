@@ -21,6 +21,7 @@ const templateSucces = document.querySelector('#success').content;
 const templateError = document.querySelector('#error').content;
 
 const FILE_TYPES = ['jpg', 'jpeg', 'png', 'gif', 'jfif'];
+
 const submitBtnText = {
   IDLE: 'Сохранить',
   SENDING: 'Сохраняю...',
@@ -28,14 +29,30 @@ const submitBtnText = {
 
 const SCALE_STEP = 0.25;
 
-const disabledBtn = (text) => {
+const disableBtn = (text) => {
   formSubmitBtn.disabled = true;
   formSubmitBtn.textContent = text;
 };
 
-const enabledBtn = (text) => {
+const enableBtn = (text) => {
   formSubmitBtn.disabled = false;
   formSubmitBtn.textContent = text;
+};
+
+const showPhotoEditor = () => {
+  photoEditorForm.classList.remove('hidden');
+};
+
+const hidePhotoEditor = () => {
+  photoEditorForm.classList.add('hidden');
+};
+
+const addModalOpenClass = () => {
+  pageBody.classList.add('modal-open');
+};
+
+const removeModalOpenClass = () => {
+  pageBody.classList.remove('modal-open');
 };
 
 const onPhotoEditorResetBtnClick = () => closePhotoEditor();
@@ -75,14 +92,15 @@ zoomInBtn.addEventListener('click', onZoomInBtnClick);
 effectsList.addEventListener('change', onEffectChange);
 
 function closePhotoEditor() {
-  photoEditorForm.classList.add('hidden');
-  pageBody.classList.remove('modal-open');
+  hidePhotoEditor();
+  removeModalOpenClass();
 
   document.removeEventListener('keydown', onDocumentKeydown);
   photoEditorResetBtn.removeEventListener('click', onPhotoEditorResetBtnClick);
 
   uploadForm.reset();
   resetFilter();
+
   imgPreview.style.transform = 'scale(1)';
   scale = 1;
   scaleControlValue.value = '100%';
@@ -93,6 +111,7 @@ const setFilePreview = () => {
   const file = uploadFileControl.files[0];
   const url = URL.createObjectURL(file);
   imgPreview.src = url;
+
   effectsPreview.forEach((item) => {
     item.style.backgroundImage = `url(${url})`;
   }
@@ -101,20 +120,27 @@ const setFilePreview = () => {
 
 const isValidType = (file) => {
   const fileName = file.name.toLowerCase();
+
   return FILE_TYPES.some((item) => fileName.endsWith(item));
 };
 
 const isFileValid = () => {
   const file = uploadFileControl.files[0];
+
   return file && isValidType(file);
 };
 
+let validator;
 const openUploadModal = () => {
-  photoEditorForm.classList.remove('hidden');
-  pageBody.classList.add('modal-open');
+  showPhotoEditor();
+  addModalOpenClass();
+
   photoEditorResetBtn.addEventListener('click', onPhotoEditorResetBtnClick);
   document.addEventListener('keydown', onDocumentKeydown);
   uploadForm.addEventListener('submit', onFormSubmit);
+
+  validator = createValidator(uploadForm);
+  validator.addValidators(hashtagInput, commentInput);
 };
 
 const onUploadFileControlChange = () => {
@@ -125,23 +151,21 @@ const onUploadFileControlChange = () => {
     return;
   }
   showErrorMessage('Неверный тип файла');
+
   uploadFileControl.value = '';
 };
 
 export const initUploadModal = () => {
-
   uploadFileControl.addEventListener('change', onUploadFileControlChange);
 };
 
 const sendFormData = async (formElement) => {
-  const validator = createValidator(uploadForm);
   const isValid = validator.validate();
 
-  validator.addValidators(hashtagInput, commentInput);
   if (isValid) {
     hashtagInput.value = hashtagInput.value.trim().replaceAll(/\s+/g, ' ');
 
-    disabledBtn(submitBtnText.SENDING);
+    disableBtn(submitBtnText.SENDING);
 
     try {
       await sendData(new FormData(formElement));
@@ -150,7 +174,7 @@ const sendFormData = async (formElement) => {
     } catch (error) {
       appendNotification(templateError);
     } finally {
-      enabledBtn(submitBtnText.IDLE);
+      enableBtn(submitBtnText.IDLE);
     }
   }
 };
