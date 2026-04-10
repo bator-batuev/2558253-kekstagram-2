@@ -17,7 +17,7 @@ const scaleControlValue = uploadForm.querySelector('.scale__control--value');
 const effectsList = uploadForm.querySelector('.effects__list');
 const effectsPreview = document.querySelectorAll('.effects__preview');
 const formSubmitBtn = uploadForm.querySelector('.img-upload__submit');
-const templateSucces = document.querySelector('#success').content;
+const templateSuccess = document.querySelector('#success').content;
 const templateError = document.querySelector('#error').content;
 
 const FILE_TYPES = ['jpg', 'jpeg', 'png', 'gif', 'jfif'];
@@ -71,6 +71,7 @@ const onDocumentKeydown = (evt) => {
 };
 
 let scale = 1;
+
 const onZoomOutBtnClick = () => {
   if (scale > SCALE_STEP) {
     scale -= SCALE_STEP;
@@ -92,6 +93,7 @@ zoomInBtn.addEventListener('click', onZoomInBtnClick);
 effectsList.addEventListener('change', onEffectChange);
 
 let validator;
+
 function closePhotoEditor() {
   hidePhotoEditor();
   removeModalOpenClass();
@@ -116,8 +118,7 @@ const setFilePreview = () => {
 
   effectsPreview.forEach((item) => {
     item.style.backgroundImage = `url(${url})`;
-  }
-  );
+  });
 };
 
 const isValidType = (file) => {
@@ -151,6 +152,7 @@ const onUploadFileControlChange = () => {
 
     return;
   }
+
   showErrorMessage('Неверный тип файла');
 
   uploadFileControl.value = '';
@@ -171,7 +173,7 @@ const sendFormData = async (formElement) => {
     try {
       await sendData(new FormData(formElement));
 
-      appendNotification(templateSucces, () => closePhotoEditor(formElement));
+      appendNotification(templateSuccess, () => closePhotoEditor(formElement));
     } catch (error) {
       appendNotification(templateError);
     } finally {
