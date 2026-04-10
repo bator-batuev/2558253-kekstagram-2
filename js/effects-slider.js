@@ -63,7 +63,9 @@ export const resetFilter = () => {
 effectLevel.classList.add('hidden');
 
 sliderElement.noUiSlider.on('update', () => {
-  effectLevelValue.value = sliderElement.noUiSlider.get();
+  const sliderValue = parseFloat(sliderElement.noUiSlider.get());
+
+  effectLevelValue.value = Number.isInteger(sliderValue) ? sliderValue.toFixed(0) : sliderValue.toFixed(1);
 
   if (currentEffect !== 'none' && effects[currentEffect].style) {
     imgPreview.style.filter = effects[currentEffect].style(effectLevelValue.value);
