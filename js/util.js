@@ -1,6 +1,6 @@
 export const isEscapeKey = (evt) => evt.key === 'Escape';
 
-export const numDecline = (num, nominative, genetiveSingular, genetivePlural) => {
+export const declineNum = (num, nominative, genetiveSingular, genetivePlural) => {
   if (!Number.isFinite(num)) {
     throw new Error('Необходимо ввести число');
   }

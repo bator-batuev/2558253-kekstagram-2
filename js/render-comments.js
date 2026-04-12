@@ -1,6 +1,6 @@
+const COUNT_STEP = 5;
 let currentCount = 0;
 let currentComments = [];
-const COUNT_STEP = 5;
 
 const pictureElement = document.querySelector('.big-picture');
 const commentsElement = pictureElement.querySelector('.social__comments');
@@ -8,7 +8,11 @@ const commentTemplate = commentsElement.querySelector('.social__comment');
 const commentsCounter = pictureElement.querySelector('.social__comment-count');
 const commentsLoader = pictureElement.querySelector('.social__comments-loader');
 
-const renderNextComments = () => {
+const onCommentLoaderClick = () => {
+  renderNextComments();
+};
+
+function renderNextComments () {
   if (!currentComments) {
     return;
   }
@@ -40,7 +44,7 @@ const renderNextComments = () => {
   }
 
   currentCount += COUNT_STEP;
-};
+}
 
 export const clearComments = () => {
   currentCount = 0;
@@ -49,7 +53,7 @@ export const clearComments = () => {
 
   commentsLoader.classList.remove('hidden');
 
-  commentsLoader.removeEventListener('click', renderNextComments);
+  commentsLoader.removeEventListener('click', onCommentLoaderClick);
 };
 
 export const renderComments = (comments) => {
@@ -57,5 +61,5 @@ export const renderComments = (comments) => {
 
   renderNextComments(comments);
 
-  commentsLoader.addEventListener('click', renderNextComments);
+  commentsLoader.addEventListener('click', onCommentLoaderClick);
 };

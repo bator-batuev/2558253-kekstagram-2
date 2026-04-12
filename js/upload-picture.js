@@ -4,6 +4,8 @@ import { createValidator } from './validation.js';
 import { sendData } from './api.js';
 import { appendNotification, showErrorMessage } from './notification.js';
 
+const FILE_TYPES = ['jpg', 'jpeg', 'png', 'gif', 'jfif'];
+
 const pageBody = document.querySelector('body');
 const uploadForm = document.querySelector('.img-upload__form');
 const uploadFileControl = document.querySelector('#upload-file');
@@ -19,8 +21,6 @@ const effectsPreview = document.querySelectorAll('.effects__preview');
 const formSubmitBtn = uploadForm.querySelector('.img-upload__submit');
 const templateSuccess = document.querySelector('#success').content;
 const templateError = document.querySelector('#error').content;
-
-const FILE_TYPES = ['jpg', 'jpeg', 'png', 'gif', 'jfif'];
 
 const submitBtnText = {
   IDLE: 'Сохранить',

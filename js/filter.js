@@ -1,10 +1,10 @@
 import { debounce } from './util.js';
 import { renderThumbnails } from './thumbnails.js';
 
+const ACTIVE_BUTTON_CLASS = 'img-filters__button--active';
 let currentFilter = 'filter-default';
 let pictures = [];
 const filterElement = document.querySelector('.img-filters');
-const ACTIVE_BUTTON_CLASS = 'img-filters__button--active';
 
 const debounceRender = debounce(renderThumbnails);
 
@@ -15,8 +15,8 @@ const Filter = {
 };
 
 const SORTFUNC = {
-  random: () => 0.5 - Math.random(),
-  discussed: (a, b) => b.comments.length - a.comments.length,
+  sortRandom: () => 0.5 - Math.random(),
+  sortDiscussed: (a, b) => b.comments.length - a.comments.length,
 };
 
 const MAX_PICTURE_COUNT = 10;
@@ -50,10 +50,10 @@ function applyFilter() {
       filteredPictures = pictures;
       break;
     case Filter.RANDOM:
-      filteredPictures = pictures.toSorted(SORTFUNC.random).slice(0, MAX_PICTURE_COUNT);
+      filteredPictures = pictures.toSorted(SORTFUNC.sortRandom).slice(0, MAX_PICTURE_COUNT);
       break;
     case Filter.DISCUSSED:
-      filteredPictures = pictures.toSorted(SORTFUNC.discussed);
+      filteredPictures = pictures.toSorted(SORTFUNC.sortDiscussed);
       break;
   }
 
